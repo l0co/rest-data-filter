@@ -1,8 +1,8 @@
-package com.lifeinide.rest.filter.base;
+package com.lifeinide.rest.filter.filters;
 
-import com.lifeinide.rest.filter.IFilterQueryBuilder;
-import com.lifeinide.rest.filter.IQueryFilter;
 import com.lifeinide.rest.filter.enums.DateRange;
+import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
+import com.lifeinide.rest.filter.intr.QueryFilter;
 
 import java.lang.reflect.Field;
 import java.time.Instant;
@@ -15,7 +15,7 @@ import java.time.temporal.Temporal;
  *
  * @author Lukasz Frankowski
  */
-public class DateRangeQueryFilter implements IQueryFilter {
+public class DateRangeQueryFilter implements QueryFilter {
 
 	protected DateRange range = DateRange.CUSTOM;
 
@@ -93,7 +93,7 @@ public class DateRangeQueryFilter implements IQueryFilter {
 	}
 
 	@Override
-	public void accept(IFilterQueryBuilder builder, String field) {
+	public void accept(FilterQueryBuilder builder, String field) {
 		builder.add(field, this);
 	}
 

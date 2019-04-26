@@ -1,6 +1,6 @@
 package com.lifeinide.rest.filter.enums;
 
-import com.lifeinide.rest.filter.base.DateRangeQueryFilter;
+import com.lifeinide.rest.filter.filters.DateRangeQueryFilter;
 
 import java.time.LocalDate;
 

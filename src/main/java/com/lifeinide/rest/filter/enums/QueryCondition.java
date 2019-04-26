@@ -1,6 +1,6 @@
 package com.lifeinide.rest.filter.enums;
 
-import com.lifeinide.rest.filter.base.QueryFilter;
+import com.lifeinide.rest.filter.filters.QueryFilter;
 
 /**
  * Condition for {@link QueryFilter}.

@@ -1,15 +1,14 @@
-package com.lifeinide.rest.filter.base;
+package com.lifeinide.rest.filter.filters;
 
-import com.lifeinide.rest.filter.IFilterQueryBuilder;
-import com.lifeinide.rest.filter.IQueryFilter;
 import com.lifeinide.rest.filter.enums.QueryCondition;
+import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 
 /**
  * Filter for any single value.
  *
  * @author Lukasz Frankowski
  */
-public class QueryFilter<T> implements IQueryFilter {
+public class QueryFilter<T> implements com.lifeinide.rest.filter.intr.QueryFilter {
 
 	protected T value;
 
@@ -45,7 +44,7 @@ public class QueryFilter<T> implements IQueryFilter {
 	}
 
 	@Override
-	public void accept(IFilterQueryBuilder builder, String field) {
+	public void accept(FilterQueryBuilder builder, String field) {
 		builder.add(field, this);
 	}
 

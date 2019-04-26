@@ -1,8 +1,8 @@
 # rest-data-filter
 
-A collection of DTO frames that can be used to create data filters through REST/GraphQL interface conaining the abstraction to fetch underlying data from any data source (sql/nosql database, lucene index, etc).
+A collection of DTO frames that can be used to create data filters through REST/GraphQL interface containing the abstraction to fetch underlying data from any data source (sql/nosql database, lucene index, etc) and concrete implementation for JPA.
 
-This project has a dependency on `spring-data-commons` providing `Pageable` and `Page` abstraction.
+The goal of this library is to provide uniform queries to REST/GraphQL regardless the underlying data source. 
 
 Following default filters are provided here:
 

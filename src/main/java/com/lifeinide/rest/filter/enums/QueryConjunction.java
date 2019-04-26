@@ -1,6 +1,6 @@
 package com.lifeinide.rest.filter.enums;
 
-import com.lifeinide.rest.filter.base.ListQueryFilter;
+import com.lifeinide.rest.filter.filters.ListQueryFilter;
 
 /**
  * Conjunction for {@link ListQueryFilter}.

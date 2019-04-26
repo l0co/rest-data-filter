@@ -1,14 +1,14 @@
-package com.lifeinide.rest.filter;
+package com.lifeinide.rest.filter.intr;
 
 /**
  * Default interface for list filter. The filter gets the data from the client (usually in JSON) and then is converted to database query
- * using appropriate {@link IFilterQueryBuilder}.
+ * using appropriate {@link FilterQueryBuilder}.
  *
  * @author Lukasz Frankowski
  */
-public interface IQueryFilter {
+public interface QueryFilter {
 
-	default void accept(IFilterQueryBuilder builder, String field) {
+	default void accept(FilterQueryBuilder builder, String field) {
 		builder.add(field, this);
 	}
 

@@ -1,18 +1,18 @@
-package com.lifeinide.rest.filter.base;
+package com.lifeinide.rest.filter.filters;
 
-import com.lifeinide.rest.filter.IFilterQueryBuilder;
-import com.lifeinide.rest.filter.IQueryFilter;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
+import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
+import com.lifeinide.rest.filter.intr.QueryFilter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Combines multiple {@link IQueryFilter}-s with and/or conjunction.
+ * Combines multiple {@link QueryFilter}-s with and/or conjunction.
  *
  * @author Lukasz Frankowski
  */
-public class ListQueryFilter<F extends IQueryFilter> implements IQueryFilter {
+public class ListQueryFilter<F extends QueryFilter> implements QueryFilter {
 
 	protected List<F> filters = new ArrayList<>();
 
@@ -48,7 +48,7 @@ public class ListQueryFilter<F extends IQueryFilter> implements IQueryFilter {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public void accept(IFilterQueryBuilder builder, String field) {
+	public void accept(FilterQueryBuilder builder, String field) {
 		builder.add(field, this);
 	}
 

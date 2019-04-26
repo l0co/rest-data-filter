@@ -1,14 +1,14 @@
-package com.lifeinide.rest.filter.base;
+package com.lifeinide.rest.filter.filters;
 
-import com.lifeinide.rest.filter.IFilterQueryBuilder;
-import com.lifeinide.rest.filter.IQueryFilter;
+import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
+import com.lifeinide.rest.filter.intr.QueryFilter;
 
 /**
  * Filter for number range.
  * 
  * @author Lukasz Frankowski
  */
-public abstract class ValueRangeQueryFilter<N extends Number> implements IQueryFilter {
+public abstract class ValueRangeQueryFilter<N extends Number> implements QueryFilter {
 
 	protected N from;
 
@@ -37,7 +37,7 @@ public abstract class ValueRangeQueryFilter<N extends Number> implements IQueryF
 	}
 
 	@Override
-	public void accept(IFilterQueryBuilder builder, String field) {
+	public void accept(FilterQueryBuilder builder, String field) {
 		builder.add(field, this);
 	}
 

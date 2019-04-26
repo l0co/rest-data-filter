@@ -1,7 +1,7 @@
-package com.lifeinide.rest.filter.base;
+package com.lifeinide.rest.filter.filters;
 
-import com.lifeinide.rest.filter.IFilterQueryBuilder;
 import com.lifeinide.rest.filter.enums.QueryCondition;
+import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 
 import java.io.Serializable;
 
@@ -24,7 +24,7 @@ public class EntityQueryFilter<ID extends Serializable> extends QueryFilter<ID> 
 	}
 
 	@Override
-	public void accept(IFilterQueryBuilder builder, String field) {
+	public void accept(FilterQueryBuilder builder, String field) {
 		builder.add(field, this);
 	}
 
