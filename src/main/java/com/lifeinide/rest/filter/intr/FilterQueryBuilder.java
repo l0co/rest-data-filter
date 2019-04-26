@@ -1,13 +1,10 @@
 package com.lifeinide.rest.filter.intr;
 
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
-import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.filters.DateRangeQueryFilter;
 import com.lifeinide.rest.filter.filters.EntityQueryFilter;
 import com.lifeinide.rest.filter.filters.ListQueryFilter;
 import com.lifeinide.rest.filter.filters.ValueRangeQueryFilter;
-
-import java.util.Optional;
 
 /**
  * Visits all possible {@link QueryFilter -s} to build the query.
@@ -33,8 +30,8 @@ public interface FilterQueryBuilder<E, Q, SELF extends FilterQueryBuilder<E, Q, 
 	/**
 	 * Builds the final query from criterias
 	 */
-	Optional<Q> build();
+	Q build();
 
-	Page<E> list(BaseRestFilter req);
+	PageableResult<E> list(BaseRestFilter req);
 
 }
