@@ -1,0 +1,17 @@
+plugins {
+    id 'java'
+}
+
+group 'com.lifeinide.rest'
+version '1.0-SNAPSHOT'
+
+sourceCompatibility = 1.8
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile group: 'org.springframework.data', name: 'spring-data-commons', version: '2.1.6.RELEASE'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+}
