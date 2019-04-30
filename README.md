@@ -150,8 +150,8 @@ This lib provides following query builders implementation, ready to be used with
 1. [HibernateFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateFilterQueryBuilder.java) - provides query builder for Hibernate criteria API.
 1. [HibernateSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateSearchFilterQueryBuilder.java) - provides query builder for Hibernate Search.
 1. [JpaFilterQueryBuilder.java](src/main/java/com/lifeinide/rest/filter/impl/jpa/JpaFilterQueryBuilder.java) - provides query builder for JPA criteria API.
-1. [MongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/mongo/MongoFilterQueryBuilder.java) - provides query builder for MongoDB.
-1. [SpringDataFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataFilterQueryBuilder.java) - provides query builder for Spring Data.
+1. [SpringDataJpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataJpaFilterQueryBuilder.java) - provides query builder for Spring Data JPA.
+1. [SpringDataMongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataMongoFilterQueryBuilder.java) - provides query builder for Spring Data MongoDB.
 
 Note, that the underlying dependencies are not included by default by this lib and to enable given persistence storage support you need to add dependencies described in the specific query builder class header to your project.
 

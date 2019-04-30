@@ -5,5 +5,5 @@ import com.lifeinide.rest.filter.BaseQueryBuilderContext;
 /**
  * @author Lukasz Frankowski
  */
-public class SpringDataQueryBuilderContext extends BaseQueryBuilderContext {
+public class SpringDataMongoQueryBuilderContext extends BaseQueryBuilderContext {
 }
