@@ -277,8 +277,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 			fullTextQuery.setMaxResults(req.getPageSize());
 		}
 
-
-		return result(req, count, fullTextQuery.getResultList());
+		return buildPageableResult(req.getPageSize(), req.getPage(), count, fullTextQuery.getResultList());
 	}
 	
 }

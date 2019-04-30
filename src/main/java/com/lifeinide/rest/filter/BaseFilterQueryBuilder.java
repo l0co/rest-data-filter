@@ -1,9 +1,9 @@
 package com.lifeinide.rest.filter;
 
-import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
+import com.lifeinide.rest.filter.intr.PageableResult.Builder;
 import com.lifeinide.rest.filter.intr.QueryFilter;
 
 import java.util.List;
@@ -14,12 +14,13 @@ import java.util.List;
  * @author Lukasz Frankowski
  */
 public abstract class BaseFilterQueryBuilder<E, Q, C extends BaseQueryBuilderContext, SELF extends BaseFilterQueryBuilder<E, Q, C, SELF>>
-implements FilterQueryBuilder<E, Q, SELF> {
+implements FilterQueryBuilder<E, Q, SELF>, Builder<E> {
 
 	public abstract C context();
 
-	protected PageableResult<E> result(BaseRestFilter req, long count, List<E> data) {
-		return new Page<>(req, count, data);
+	@Override
+	public PageableResult<E> buildPageableResult(int pageSize, int page, long count, List<E> data) {
+		return new Page<>(pageSize, page, count, data);
 	}
 
 	@Override

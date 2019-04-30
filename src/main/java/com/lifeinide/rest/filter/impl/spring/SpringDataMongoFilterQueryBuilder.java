@@ -144,7 +144,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 
 		if (criteria!=null)
 			query.addCriteria(criteria);
-		return SpringPageableConverter.springPageToApplication(
+		return SpringPageableConverter.springPageToApplication(this, 
 			new PageImpl<>(mongoTemplate.find(query, context.getEntityClass()), springPageable,
 				mongoTemplate.count(query, context.getEntityClass()))
 		);

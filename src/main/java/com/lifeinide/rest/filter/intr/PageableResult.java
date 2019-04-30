@@ -7,6 +7,11 @@ import java.util.List;
  */
 public interface PageableResult<T> extends Pageable {
 
+	@FunctionalInterface
+	public interface Builder<E> {
+		PageableResult<E> buildPageableResult(int pageSize, int page, long count, List<E> data);
+	}
+
 	long getCount();
 	int getPagesCount();
 	List<T> getData();

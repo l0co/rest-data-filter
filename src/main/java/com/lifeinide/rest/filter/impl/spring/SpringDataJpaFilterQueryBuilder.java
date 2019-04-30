@@ -137,7 +137,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 
 	@Override
 	public PageableResult<E> list(BaseRestFilter req) {
-		return SpringPageableConverter.springPageToApplication(
+		return SpringPageableConverter.springPageToApplication(this, 
 			findExecutor().findAll(build(), SpringPageableConverter.applicationPageableToSpring(req)));
 	}
 

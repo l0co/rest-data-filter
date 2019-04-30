@@ -5,6 +5,7 @@ import com.lifeinide.rest.filter.intr.SortField;
 import com.lifeinide.rest.filter.intr.Sortable;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -18,7 +19,7 @@ public class BaseRestFilter implements Serializable, Sortable, Pageable {
 
 	protected int page = 1;
 
-	protected List<SortField> sort;
+	protected List<SortField> sort = new ArrayList<>();
 
 	@Override
 	public int getPageSize() {
