@@ -1,5 +1,6 @@
-package com.lifeinide.rest.filter.jpa;
+package com.lifeinide.rest.filter.impl.jpa;
 
+import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 
 import javax.persistence.EntityManager;
@@ -8,12 +9,15 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
 /**
- * Implementation of {@link FilterQueryBuilder} with JPA {@link CriteriaBuilder}.
- * // TODOLF impl
+ * Implementation of {@link FilterQueryBuilder} with JPA {@link CriteriaBuilder}. Use with dependency:
+ * <pre>{@code compile group: 'javax.persistence', name:'javax.persistence-api', version: '2.2'}</pre>
+ *
+ * // TODOLF implement JpaFilterQueryBuilder.
  *
  * @author Lukasz Frankowski
  */
-public abstract class JpaFilterQueryBuilder<E> implements FilterQueryBuilder<E, CriteriaQuery<E>, JpaFilterQueryBuilder<E>> {
+public abstract class JpaFilterQueryBuilder<E>
+extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaFilterQueryBuilder<E>> {
 
 	protected EntityManager entityManager;
 	protected CriteriaBuilder cb;
@@ -21,6 +25,7 @@ public abstract class JpaFilterQueryBuilder<E> implements FilterQueryBuilder<E, 
 	protected CriteriaQuery<Long> countQuery;
 	protected Root<E> root;
 
+	// TODOLF can't be done by constructor
 	public JpaFilterQueryBuilder(EntityManager entityManager) {
 		this.entityManager = entityManager;
 		this.cb = cb = entityManager.getCriteriaBuilder();
