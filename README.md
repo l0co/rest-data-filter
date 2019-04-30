@@ -2,7 +2,7 @@
 
 A collection of DTO frames that can be used to create data filters through REST/GraphQL interface containing the abstraction to fetch underlying data from any data source (sql/nosql database, lucene index, etc) and some concrete implementations.
 
-The goal of this library is to provide uniform queries to REST/GraphQL regardless the underlying data source. 
+The goal of this library is to provide uniform queries to REST/GraphQL regardless the underlying data source with pagination and sorting support.
 
 ## Default filters provided
 
@@ -10,7 +10,7 @@ Following default filter frames are provided by this lib.
 
 ### [`QueryFilter`](src/main/java/com/lifeinide/rest/filter/filters/QueryFilter.java)
 
-Filters any single value with one of predefined [conditions](src/main/java/com/lifeinide/rest/filter/enums/QueryCondition.java)
+Filters any single value with one of predefined [conditions](src/main/java/com/lifeinide/rest/filter/enums/QueryCondition.java):
 
 ```json
 {
@@ -129,6 +129,25 @@ class UserFilter extends BaseRestFilter {
 		this.admin = admin;
 	}
 	
+}
+```
+
+Because `BaseRestFilter` supports pagination and sort out of the box we can now query for list of users using following example request:
+
+```json
+{
+  "admin": {
+    "value": "true"
+  },
+  "name": {
+    "condition": "notNull"
+  },
+  "pageSize": 20,
+  "page": 3,
+  "sort": [
+  	"sortDirection": "asc",
+  	"sortField": "name"
+  ]
 }
 ```
 
