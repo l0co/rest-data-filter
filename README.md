@@ -144,10 +144,10 @@ Because `BaseRestFilter` supports pagination and sort out of the box we can now 
   },
   "pageSize": 20,
   "page": 3,
-  "sort": [
+  "sort": [{
   	"sortDirection": "asc",
   	"sortField": "name"
-  ]
+  }]
 }
 ```
 
