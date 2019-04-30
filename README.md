@@ -92,11 +92,11 @@ Combines multiple filters with and/or conjunction.
   "conjunction": "and",
   "filters": [
     {
-      "condition": "gt"
+      "condition": "gt",
       "value": 10
     },
     {
-      "conditions": "ne"
+      "conditions": "ne",
       "value": 100
     }
   ]
