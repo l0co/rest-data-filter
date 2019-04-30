@@ -14,21 +14,21 @@ Filters any single value with one of predefined [conditions](src/main/java/com/l
 
 ```json
 {
-  value: "a"
+  "value": "a"
 }
 
 {
-  condition: "eq",
-  value: "a"
+  "condition": "eq",
+  "value": "a"
 }
 
 {
-  condition: "gt",
-  value: 10
+  "condition": "gt",
+  "value": 10
 }
 
 {
-  condition: "notNull"
+  "condition": "notNull"
 }
 ``` 
 
@@ -38,7 +38,7 @@ Special kind of single value `QueryFilter` assumed to be working with entity ID.
 
 ```json
 {
-  value: "b9a103d6-a9dd-4371-9d2b-1b008bf88327"
+  "value": "b9a103d6-a9dd-4371-9d2b-1b008bf88327"
 }
 ``` 
 
@@ -48,16 +48,16 @@ Filters date by from-to range.
 
 ```json
 {
-  from: "2018-01-01",
-  to: "2018-03-03"
+  "from": "2018-01-01",
+  "to": "2018-03-03"
 }
 
 {
-  range: "LAST_30_DAYS"
+  "range": "LAST_30_DAYS"
 }
 
 {
-  range: "PREVIOUS_MONTH"
+  "range": "PREVIOUS_MONTH"
 }
 ``` 
 
@@ -67,8 +67,8 @@ Filters numeric value by from-to range.
 
 ```json
 {
-  from: 10,
-  to: 20
+  "from": 10,
+  "to": 20
 }
 ``` 
 
@@ -78,26 +78,26 @@ Combines multiple filters with and/or conjunction.
 
 ```json
 {
-  filters: [
+  "filters": [
     {
-      value: "a"
+      "value": "a"
     },
     {
-      value: "b"
+      "value": "b"
     }
   ]
 }
 
 {
-  conjunction: "and"
-  filters: [
+  "conjunction": "and"
+  "filters": [
     {
-      condition: "gt"
-      value: 10
+      "condition": "gt"
+      "value": 10
     },
     {
-      conditions: "ne"
-      value: 100
+      "conditions": "ne"
+      "value": 100
     }
   ]
 }
