@@ -147,8 +147,8 @@ public PageableResult<User> listUsers(UserFilter req) {
 
 This lib provides following query builders implementation, ready to be used with default filters:
 
-1. [ElasticSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/elastic/ElasticSearchFilterQueryBuilder.java) - provides query builder for Elastic Search.
-1. [Hibernate5FilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/Hibernate5FilterQueryBuilder.java) - provides query builder for Hibernate 5 criteria API.
+1. [HibernateFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateFilterQueryBuilder.java) - provides query builder for Hibernate criteria API.
+1. [HibernateSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateSearchFilterQueryBuilder.java) - provides query builder for Hibernate Search.
 1. [JpaFilterQueryBuilder.java](src/main/java/com/lifeinide/rest/filter/impl/jpa/JpaFilterQueryBuilder.java) - provides query builder for JPA criteria API.
 1. [MongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/mongo/MongoFilterQueryBuilder.java) - provides query builder for MongoDB.
 1. [SpringDataFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataFilterQueryBuilder.java) - provides query builder for Spring Data.

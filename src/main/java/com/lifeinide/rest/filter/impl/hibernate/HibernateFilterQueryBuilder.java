@@ -14,7 +14,7 @@ import javax.persistence.criteria.CriteriaQuery;
  *
  * @author Lukasz Frankowski
  */
-public abstract class Hibernate5FilterQueryBuilder<E>
-extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, Hibernate5QueryBuilderContext, Hibernate5FilterQueryBuilder<E>> {
+public abstract class HibernateFilterQueryBuilder<E>
+extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, HibernateQueryBuilderContext, HibernateFilterQueryBuilder<E>> {
 
 }

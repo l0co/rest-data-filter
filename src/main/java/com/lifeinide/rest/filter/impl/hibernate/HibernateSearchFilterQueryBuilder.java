@@ -1,4 +1,4 @@
-package com.lifeinide.rest.filter.impl.elastic;
+package com.lifeinide.rest.filter.impl.hibernate;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
@@ -15,7 +15,7 @@ import javax.persistence.criteria.CriteriaQuery;
  *
  * @author Lukasz Frankowski
  */
-public abstract class ElasticSearchFilterQueryBuilder<E>
-extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, ElasticSearchQueryBuilderContext, ElasticSearchFilterQueryBuilder<E>> {
+public abstract class HibernateSearchFilterQueryBuilder<E>
+extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, HibernateSearchQueryBuilderContext, HibernateSearchFilterQueryBuilder<E>> {
 
 }
