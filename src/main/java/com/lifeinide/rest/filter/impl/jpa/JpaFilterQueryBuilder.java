@@ -1,50 +1,178 @@
 package com.lifeinide.rest.filter.impl.jpa;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
+import com.lifeinide.rest.filter.dto.BaseRestFilter;
+import com.lifeinide.rest.filter.enums.QueryConjunction;
+import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
+import com.lifeinide.rest.filter.intr.PageableResult;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.time.LocalDate;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link FilterQueryBuilder} with JPA {@link CriteriaBuilder}. Use with dependency:
- * <pre>{@code compile group: 'javax.persistence', name:'javax.persistence-api', version: '2.2'}</pre>
  *
- * // TODOLF implement JpaFilterQueryBuilder.
+ * <pre>{@code compile group: 'javax.persistence', name:'javax.persistence-api', version: '2.2'}</pre>
  *
  * @author Lukasz Frankowski
  */
-public abstract class JpaFilterQueryBuilder<E>
+public class JpaFilterQueryBuilder<E>
 extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaFilterQueryBuilder<E>> {
 
-	protected EntityManager entityManager;
-	protected CriteriaBuilder cb;
-	protected CriteriaQuery<E> query;
-	protected CriteriaQuery<Long> countQuery;
-	protected Root<E> root;
+	protected JpaQueryBuilderContext<E> context;
+	protected QueryConjunction conjunction = QueryConjunction.and;
 
-	// TODOLF can't be done by constructor
-	public JpaFilterQueryBuilder(EntityManager entityManager) {
-		this.entityManager = entityManager;
-		this.cb = cb = entityManager.getCriteriaBuilder();
+	protected JpaFilterQueryBuilder(EntityManager entityManager) {
+		this.context = new JpaQueryBuilderContext<>(entityManager, entityManager.getCriteriaBuilder());
 	}
 
 	public JpaFilterQueryBuilder(EntityManager entityManager, CriteriaQuery<E> query, Root<E> root) {
 		this(entityManager);
-		this.query = query;
-		this.root = root;
-
-		this.countQuery = cb.createQuery(Long.class).select(cb.count(countQuery.from(root.getModel())));
+		init(query, root);
 	}
 
 	public JpaFilterQueryBuilder(EntityManager entityManager, Class<E> rootClass) {
 		this(entityManager);
-		this.query = cb.createQuery(rootClass);
-		this.root = query.from(rootClass);
+		CriteriaQuery<E> query = context.getCb().createQuery(rootClass);
+		init(query, query.from(rootClass));
+	}
 
-		this.countQuery = cb.createQuery(Long.class).select(cb.count(countQuery.from(rootClass)));
+	protected void init(CriteriaQuery<E> query, Root<E> root) {
+		context.setQuery(query);
+		context.setRoot(root);
+
+		CriteriaQuery<Long> countQuery = context.getEntityManager().getCriteriaBuilder().createQuery(Long.class);
+		countQuery.select(context.getCb().count(query.getRoots().iterator().next()));
+		for(Root<?> fromRoot : query.getRoots())
+			countQuery.getRoots().add(fromRoot);
+	}
+
+	public JpaFilterQueryBuilder<E> withOrConjunction() {
+		conjunction = QueryConjunction.or;
+		return this;
+	}
+
+	@Override
+	public JpaQueryBuilderContext context() {
+		return context;
+	}
+
+	@Override
+	public JpaFilterQueryBuilder<E> add(String field, DateRangeQueryFilter filter) {
+		LocalDate from = filter.calculateFrom();
+		LocalDate to = filter.calculateTo();
+
+		Predicate predicate = from==null ? null : context.getCb().greaterThanOrEqualTo(context.getRoot().get(field), from);
+		Predicate toPredicate = to==null ? null : context.getCb().lessThan(context.getRoot().get(field), to);
+
+		predicate = (predicate!=null && toPredicate!=null)
+			? context.getCb().and(predicate, toPredicate)
+			: predicate != null ? predicate : toPredicate;
+
+		if (predicate!=null)
+			context.getPredicates().add(predicate);
+
+		return this;
+	}
+
+	@Override
+	public JpaFilterQueryBuilder<E> add(String field, EntityQueryFilter filter) {
+		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(),
+			context.getCb(), context.getRoot().get(field),
+			context.getEntityManager().find(context.getRoot().getModel().getJavaType(), filter.getValue())));
+		return null;
+	}
+
+	@Override
+	public JpaFilterQueryBuilder<E> add(String field, ListQueryFilter<?> filter) {
+		JpaFilterQueryBuilder<E> internalBuilder =
+			new JpaFilterQueryBuilder<>(context.getEntityManager(), context.getQuery(), context.getRoot());
+
+		if (QueryConjunction.or.equals(filter.getConjunction()))
+			internalBuilder.withOrConjunction();
+
+		filter.getFilters().forEach(f -> f.accept(this, field));
+		internalBuilder.buildPredicate().ifPresent(predicate -> context.getPredicates().add(predicate));
+
+		return this;
+	}
+
+	@Override
+	public JpaFilterQueryBuilder<E> add(String field, QueryFilter filter) {
+		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(),
+			context.getCb(), context.getRoot().get(field), filter.getValue()));
+		return this;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public JpaFilterQueryBuilder<E> add(String field, ValueRangeQueryFilter filter) {
+		Number from = filter.getFrom();
+		Number to = filter.getTo();
+
+		Predicate predicate = from==null ? null : context.getCb().greaterThanOrEqualTo(context.getRoot().get(field), (Comparable) from);
+		Predicate toPredicate = to==null ? null : context.getCb().lessThanOrEqualTo(context.getRoot().get(field), (Comparable) to);
+
+		predicate = (predicate!=null && toPredicate!=null)
+			? context.getCb().and(predicate, toPredicate)
+			: predicate != null ? predicate : toPredicate;
+
+		if (predicate!=null)
+			context.getPredicates().add(predicate);
+
+		return this;
+	}
+
+	@Override
+	public CriteriaQuery<E> build() {
+		return context.getQuery();
+	}
+
+	protected Optional<Predicate> buildPredicate() {
+		if (!context.getPredicates().isEmpty()) {
+			if (QueryConjunction.and.equals(conjunction)) {
+				return Optional.of(context.getCb().and(context.getPredicates().toArray(new Predicate[]{})));
+			} else {
+				return Optional.of(context.getCb().or(context.getPredicates().toArray(new Predicate[]{})));
+			}
+		}
+
+		return Optional.empty();
+	}
+
+	@Override
+	public PageableResult<E> list(BaseRestFilter req) {
+		// apply predicates
+		buildPredicate().ifPresent(predicate -> {
+			context.getQuery().where(predicate);
+			context.getCountQuery().where(predicate);
+		});
+
+		// apply orders
+		var orders = req.getSort().stream()
+			.map(sort -> sort.isAsc()
+				? context.getCb().asc(context.getRoot().get(sort.getSortField()))
+				: context.getCb().desc(context.getRoot().get(sort.getSortField())))
+			.collect(Collectors.toList());
+		if (!orders.isEmpty())
+			context.getQuery().orderBy(orders);
+
+		// apply pagination
+		var q = context.getEntityManager().createQuery(context.getQuery());
+		if (req.isPaged())
+			q.setFirstResult(req.getOffset()).setMaxResults(req.getPageSize());
+
+		// create and execute quueries
+		return buildPageableResult(req.getPageSize(), req.getPage(),
+			context.getEntityManager().createQuery(context.getCountQuery()).getSingleResult(),
+			q.getResultList());
 	}
 	
 }
