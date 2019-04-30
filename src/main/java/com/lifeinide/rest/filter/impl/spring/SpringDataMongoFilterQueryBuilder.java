@@ -137,8 +137,11 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 		} else {
 
 			// full text query execution
-			// TODO no class restrictions yet
-			query = new TextQuery(new TextCriteria().matchingAny(fullTextQuery)).sortByScore().with(springPageable);
+
+			query = new TextQuery(new TextCriteria().matchingAny(fullTextQuery))
+				.sortByScore()
+				.restrict(context.getEntityClass())
+				.with(springPageable);
 
 		}
 
