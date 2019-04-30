@@ -16,22 +16,22 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 
 	protected int pageSize;
 	protected int page;
-	protected int count;
+	protected long count;
 	protected int pagesCount;
 	protected List<T> data;
 
 	public Page() {
 	}
 
-	public Page(int pageSize, int page, int count, List<T> data) {
+	public Page(int pageSize, int page, long count, List<T> data) {
 		this.pageSize = pageSize;
 		this.page = page;
 		this.count = count;
 		this.data = data;
-		this.pagesCount = this.count / pageSize + (this.count % pageSize == 0 ? 0 : 1);
+		this.pagesCount = (int) (this.count / pageSize + (this.count % pageSize == 0 ? 0 : 1));
 	}
 
-	public Page(Pageable pageable, int count, List<T> data) {
+	public Page(Pageable pageable, long count, List<T> data) {
 		this(pageable.getPageSize(), pageable.getPage(), count, data);
 	}
 
@@ -54,11 +54,11 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 	}
 
 	@Override
-	public int getCount() {
+	public long getCount() {
 		return count;
 	}
 
-	public void setCount(int count) {
+	public void setCount(long count) {
 		this.count = count;
 	}
 

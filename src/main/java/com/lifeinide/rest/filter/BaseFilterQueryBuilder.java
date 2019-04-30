@@ -18,7 +18,7 @@ implements FilterQueryBuilder<E, Q, SELF> {
 
 	public abstract C context();
 
-	protected PageableResult<E> result(BaseRestFilter req, int count, List<E> data) {
+	protected PageableResult<E> result(BaseRestFilter req, long count, List<E> data) {
 		return new Page<>(req, count, data);
 	}
 

@@ -46,5 +46,5 @@ public class BaseRestFilter implements Serializable, Sortable, Pageable {
 	public void setSort(List<SortField> sort) {
 		this.sort = sort;
 	}
-	
+
 }

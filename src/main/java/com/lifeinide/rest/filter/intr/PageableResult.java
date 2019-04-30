@@ -7,7 +7,7 @@ import java.util.List;
  */
 public interface PageableResult<T> extends Pageable {
 
-	int getCount();
+	long getCount();
 	int getPagesCount();
 	List<T> getData();
 
