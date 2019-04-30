@@ -8,10 +8,7 @@ import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
 
 import javax.persistence.EntityManager;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -147,13 +144,20 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 		return Optional.empty();
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public PageableResult<E> list(BaseRestFilter req) {
 		// apply predicates
 		buildPredicate().ifPresent(predicate -> {
 			context.getQuery().where(predicate);
-			context.getCountQuery().where(predicate);
 		});
+
+		// first we calulate count
+		Selection<E> selection = context.getQuery().getSelection();
+		CriteriaQuery countQuery = context.getQuery();
+		countQuery.select(context.getCb().count(context.getRoot()));
+		Long count = (Long) context.getEntityManager().createQuery(countQuery).getSingleResult();
+		context.getQuery().select(selection); // restore selection afterwards
 
 		// apply orders
 		var orders = req.getSort().stream()
@@ -169,10 +173,8 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 		if (req.isPaged())
 			q.setFirstResult(req.getOffset()).setMaxResults(req.getPageSize());
 
-		// create and execute quueries
-		return buildPageableResult(req.getPageSize(), req.getPage(),
-			context.getEntityManager().createQuery(context.getCountQuery()).getSingleResult(),
-			q.getResultList());
+		// create and execute main query
+		return buildPageableResult(req.getPageSize(), req.getPage(), count, q.getResultList());
 	}
 	
 }

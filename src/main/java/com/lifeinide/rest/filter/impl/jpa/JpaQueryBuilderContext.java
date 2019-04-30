@@ -19,7 +19,6 @@ public class JpaQueryBuilderContext<E> extends BaseQueryBuilderContext {
 	protected CriteriaBuilder cb;
 	protected Root<E> root;
 	protected CriteriaQuery<E> query;
-	protected CriteriaQuery<Long> countQuery;
 	List<Predicate> predicates = new ArrayList<>();
 
 	public JpaQueryBuilderContext(EntityManager entityManager, CriteriaBuilder cb) {
@@ -49,14 +48,6 @@ public class JpaQueryBuilderContext<E> extends BaseQueryBuilderContext {
 
 	public void setQuery(CriteriaQuery<E> query) {
 		this.query = query;
-	}
-
-	public CriteriaQuery<Long> getCountQuery() {
-		return countQuery;
-	}
-
-	public void setCountQuery(CriteriaQuery<Long> countQuery) {
-		this.countQuery = countQuery;
 	}
 
 	public List<Predicate> getPredicates() {
