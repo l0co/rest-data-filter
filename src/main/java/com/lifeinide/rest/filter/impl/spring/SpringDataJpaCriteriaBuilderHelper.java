@@ -7,9 +7,9 @@ import org.springframework.data.jpa.domain.Specification;
 /**
  * @author Lukasz Frankowski
  */
-public class SpringJpaCriteriaBuilderHelper extends JpaCriteriaBuilderHelper {
+public class SpringDataJpaCriteriaBuilderHelper extends JpaCriteriaBuilderHelper {
 
-	public static final SpringJpaCriteriaBuilderHelper INSTANCE = new SpringJpaCriteriaBuilderHelper();
+	public static final SpringDataJpaCriteriaBuilderHelper INSTANCE = new SpringDataJpaCriteriaBuilderHelper();
 
 	public <E> Specification<E> conjunctCriteria(QueryConjunction conjunction, Specification<E> left, Specification<E> right) {
 		switch (conjunction) {

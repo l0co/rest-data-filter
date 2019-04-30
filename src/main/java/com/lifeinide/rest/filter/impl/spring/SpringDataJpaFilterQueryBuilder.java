@@ -77,7 +77,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 	@Override
 	public SpringDataJpaFilterQueryBuilder<E> add(String field, EntityQueryFilter filter) {
 		if (filter!=null)
-			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> SpringJpaCriteriaBuilderHelper.INSTANCE.buildCriteria(
+			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> SpringDataJpaCriteriaBuilderHelper.INSTANCE.buildCriteria(
 				filter.getCondition(), criteriaBuilder, root.get(field).get("id"), filter.getValue()));
 
 		return this;
@@ -101,7 +101,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 	@Override
 	public SpringDataJpaFilterQueryBuilder<E> add(String field, QueryFilter filter) {
 		if (filter!=null)
-			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> SpringJpaCriteriaBuilderHelper.INSTANCE.buildCriteria(
+			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> SpringDataJpaCriteriaBuilderHelper.INSTANCE.buildCriteria(
 				filter.getCondition(), criteriaBuilder, root.get(field), filter.getValue()));
 
 		return this;
@@ -160,7 +160,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 		if (context.getSpecification()==null)
 			context.setSpecification(specification);
 		else
-			context.setSpecification(SpringJpaCriteriaBuilderHelper.INSTANCE
+			context.setSpecification(SpringDataJpaCriteriaBuilderHelper.INSTANCE
 				.conjunctCriteria(context.getConjunction(), context.getSpecification(), specification));
 	}
 
