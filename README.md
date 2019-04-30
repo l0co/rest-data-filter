@@ -89,7 +89,7 @@ Combines multiple filters with and/or conjunction.
 }
 
 {
-  "conjunction": "and"
+  "conjunction": "and",
   "filters": [
     {
       "condition": "gt"
@@ -132,7 +132,7 @@ class UserFilter extends BaseRestFilter {
 }
 ```
 
-Now, in your controller you can simply get the data in following way:
+Now, in your controller you can simply get the data in the following way (this example uses `JpaFilterQueruBuilder` but there are some other options listed below):
 
 ```java
 public PageableResult<User> listUsers(UserFilter req) {
