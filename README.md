@@ -2,7 +2,7 @@
 
 A collection of DTO frames that can be used to create data filters through REST/GraphQL interface containing the abstraction to fetch underlying data from any data source (sql/nosql database, lucene index, etc) and some concrete implementations.
 
-The goal of this library is to provide uniform queries to REST/GraphQL regardless the underlying data source with pagination and sorting support.
+The goal of this library is to provide uniform queries to REST/GraphQL with pagination and sorting support regardless the underlying data source .
 
 ## Default filters provided
 
