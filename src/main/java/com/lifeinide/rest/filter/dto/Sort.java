@@ -13,14 +13,6 @@ public class Sort implements Serializable, SortField {
 	protected String sortField;
 	protected SortDirection sortDirection;
 
-	public Sort() {
-	}
-
-	public Sort(String sortField, SortDirection sortDirection) {
-		this.sortField = sortField;
-		this.sortDirection = sortDirection;
-	}
-
 	@Override
 	public String getSortField() {
 		return sortField;
@@ -38,4 +30,32 @@ public class Sort implements Serializable, SortField {
 	public void setSortDirection(SortDirection sortDirection) {
 		this.sortDirection = sortDirection;
 	}
+
+	public Sort with(String sortField) {
+		setSortField(sortField);
+		return this;
+	}
+
+	public Sort asc() {
+		setSortDirection(SortDirection.ASC);
+		return this;
+	}
+
+	public Sort desc() {
+		setSortDirection(SortDirection.DESC);
+		return this;
+	}
+
+	public static Sort of(String sortField) {
+		return new Sort().with(sortField);
+	}
+
+	public static Sort ofAsc(String sortField) {
+		return of(sortField);
+	}
+
+	public static Sort ofDesc(String sortField) {
+		return of(sortField).desc();
+	}
+
 }

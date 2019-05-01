@@ -1,6 +1,7 @@
 package com.lifeinide.rest.filter.test;
 
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
+import com.lifeinide.rest.filter.dto.Sort;
 import com.lifeinide.rest.filter.enums.DateRange;
 import com.lifeinide.rest.filter.filters.DateRangeQueryFilter;
 import com.lifeinide.rest.filter.filters.ListQueryFilter;
@@ -385,18 +386,23 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 				.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(36L).le(), SingleValueQueryFilter.of(50L).ge()))
 				.add("enumVal", SingleValueQueryFilter.of(EntityEnum.A))
 				.add("dateVal", DateRangeQueryFilter.ofTo(TODAY))
-				.list(BaseRestFilter.ofUnpaged());
+				.list(BaseRestFilter.ofUnpaged().withSort(Sort.ofDesc("longVal")));
 			assertEquals(18, res.getCount());
+			E prev = null;
 			for (E e: res) {
 				assertTrue(e.getStringVal().compareTo("ba") >= 0);
 				assertTrue(e.getLongVal() <= 36L || e.getLongVal() >= 50L);
 				assertEquals(EntityEnum.A, e.getEnumVal());
 				assertTrue(e.getDateVal().isBefore(TODAY));
+
+				// test sorting
+				if (prev != null)
+					assertTrue(prev.getLongVal() > e.getLongVal());
+				prev = e;
 			}
 		});
 	}
 
 	// TODOLF entity tests
-	// TODOLF order tests
 
 }
