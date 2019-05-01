@@ -95,7 +95,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 		if (QueryConjunction.or.equals(filter.getConjunction()))
 			internalBuilder.withOrConjunction();
 
-		filter.getFilters().forEach(f -> f.accept(this, field));
+		filter.getFilters().forEach(f -> f.accept(internalBuilder, field));
 		internalBuilder.buildPredicate().ifPresent(predicate -> context.getPredicates().add(predicate));
 
 		return this;

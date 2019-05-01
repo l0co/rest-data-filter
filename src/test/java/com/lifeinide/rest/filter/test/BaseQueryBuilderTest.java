@@ -1,6 +1,10 @@
 package com.lifeinide.rest.filter.test;
 
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
+import com.lifeinide.rest.filter.enums.QueryCondition;
+import com.lifeinide.rest.filter.enums.QueryConjunction;
+import com.lifeinide.rest.filter.filters.ListQueryFilter;
+import com.lifeinide.rest.filter.filters.SingleValueQueryFilter;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
 import org.junit.jupiter.api.BeforeAll;
@@ -85,5 +89,119 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 		});
 	}
 
+	@Test
+	public void testStringFilter() {
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new SingleValueQueryFilter<>("aa"))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(1, res.getCount());
+			assertEquals("aa", res.getData().iterator().next().getStringVal());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new SingleValueQueryFilter<>("aa", QueryCondition.ne))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(99, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new SingleValueQueryFilter<>("aa", QueryCondition.ge))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(100, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new SingleValueQueryFilter<>("aa", QueryCondition.gt))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(99, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new SingleValueQueryFilter<>("ba", QueryCondition.le))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(27, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new SingleValueQueryFilter<>("ba", QueryCondition.lt))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(26, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new SingleValueQueryFilter<>(null, QueryCondition.notNull))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(100, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new SingleValueQueryFilter<>(null, QueryCondition.isNull))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(0, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new ListQueryFilter<>()
+					.addFilter(new SingleValueQueryFilter<>("aa"))
+					.addFilter(new SingleValueQueryFilter<>("ab")))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(2, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("stringVal", new ListQueryFilter<>(QueryConjunction.and)
+					.addFilter(new SingleValueQueryFilter<>("aa"))
+					.addFilter(new SingleValueQueryFilter<>("ab")))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(0, res.getCount());
+		});
+	}
+
+	@Test
+	public void testEnumFilter() {
+		// TODOLF implement BaseQueryBuilderTest.testEnumFilter
+	}
+
+	@Test
+	public void testLongFilter() {
+		// TODOLF implement BaseQueryBuilderTest.testLongFilter
+	}
+
+	@Test
+	public void testDecimalFilter() {
+		// TODOLF implement BaseQueryBuilderTest.testDecimalFilter
+	}
+
+	@Test
+	public void testDateFilter() {
+		// TODOLF implement BaseQueryBuilderTest.testDateFilter
+	}
+
+	@Test
+	public void testAndListFilter() {
+		// TODOLF implement BaseQueryBuilderTest.testAndListFilter
+	}
+
+	@Test
+	public void testOrListFilter() {
+		// TODOLF implement BaseQueryBuilderTest.testOrListFilter
+	}
+
+	@Test
+	public void testMultipleFilters() {
+		// TODOLF implement BaseQueryBuilderTest.testOrListFilter
+	}
+
+	// TODOLF entity test
 
 }
