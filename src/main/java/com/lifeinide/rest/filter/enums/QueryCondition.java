@@ -1,9 +1,9 @@
 package com.lifeinide.rest.filter.enums;
 
-import com.lifeinide.rest.filter.filters.QueryFilter;
+import com.lifeinide.rest.filter.filters.SingleValueQueryFilter;
 
 /**
- * Condition for {@link QueryFilter}.
+ * Condition for {@link SingleValueQueryFilter}.
  *
  * @author Lukasz Frankowski
  */

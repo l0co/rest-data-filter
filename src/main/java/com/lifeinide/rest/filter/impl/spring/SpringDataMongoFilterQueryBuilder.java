@@ -84,7 +84,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 	}
 
 	@Override
-	public SpringDataMongoFilterQueryBuilder<E> add(String field, QueryFilter filter) {
+	public SpringDataMongoFilterQueryBuilder<E> add(String field, SingleValueQueryFilter filter) {
 		if (filter!=null)
 			addCriteria(SpringDataMongoCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(), field, filter.getValue()));
 

@@ -102,7 +102,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 	}
 
 	@Override
-	public JpaFilterQueryBuilder<E> add(String field, QueryFilter filter) {
+	public JpaFilterQueryBuilder<E> add(String field, SingleValueQueryFilter filter) {
 		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(),
 			context.getCb(), context.getRoot().get(field), filter.getValue()));
 		return this;

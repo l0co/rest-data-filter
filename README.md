@@ -8,7 +8,7 @@ The goal of this library is to provide uniform queries to REST/GraphQL with pagi
 
 Following default filter frames are provided by this lib.
 
-### [`QueryFilter`](src/main/java/com/lifeinide/rest/filter/filters/QueryFilter.java)
+### [`SingleValueQueryFilter`](src/main/java/com/lifeinide/rest/filter/filters/SingleValueQueryFilter.java)
 
 Filters any single value with one of predefined [conditions](src/main/java/com/lifeinide/rest/filter/enums/QueryCondition.java):
 
@@ -110,22 +110,22 @@ A query builder is an abstraction used to fetch paginated data from the persiste
 ```java
 class UserFilter extends BaseRestFilter {
 
-	protected QueryFilter<String> name;
-	protected QueryFilter<Boolean> admin;
+	protected SingleValueQueryFilter<String> name;
+	protected SingleValueQueryFilter<Boolean> admin;
   
-	public QueryFilter<String> getName() {
+	public SingleValueQueryFilter<String> getName() {
 		return name;
 	}
 
-	public void setName(QueryFilter<String> name) {
+	public void setName(SingleValueQueryFilter<String> name) {
 		this.name = name;
 	}
 
-	public QueryFilter<Boolean> getAdmin() {
+	public SingleValueQueryFilter<Boolean> getAdmin() {
 		return admin;
 	}
 
-	public void setAdmin(QueryFilter<Boolean> admin) {
+	public void setAdmin(SingleValueQueryFilter<Boolean> admin) {
 		this.admin = admin;
 	}
 	

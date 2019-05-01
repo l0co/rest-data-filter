@@ -1,10 +1,7 @@
 package com.lifeinide.rest.filter.intr;
 
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
-import com.lifeinide.rest.filter.filters.DateRangeQueryFilter;
-import com.lifeinide.rest.filter.filters.EntityQueryFilter;
-import com.lifeinide.rest.filter.filters.ListQueryFilter;
-import com.lifeinide.rest.filter.filters.ValueRangeQueryFilter;
+import com.lifeinide.rest.filter.filters.*;
 
 /**
  * Visits all possible {@link QueryFilter -s} to build the query.
@@ -19,7 +16,7 @@ public interface FilterQueryBuilder<E, Q, SELF extends FilterQueryBuilder<E, Q, 
 	SELF add(String field, DateRangeQueryFilter filter);
 	SELF add(String field, EntityQueryFilter filter);
 	SELF add(String field, ListQueryFilter<?> filter);
-	SELF add(String field, com.lifeinide.rest.filter.filters.QueryFilter filter);
+	SELF add(String field, SingleValueQueryFilter filter);
 	SELF add(String field, ValueRangeQueryFilter filter);
 
 	/**

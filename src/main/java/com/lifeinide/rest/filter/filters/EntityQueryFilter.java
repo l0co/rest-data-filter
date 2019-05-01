@@ -6,11 +6,11 @@ import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import java.io.Serializable;
 
 /**
- * Filter for entities. Special kind of {@link QueryFilter} carrying the entity ID.
+ * Filter for entities. Special kind of {@link SingleValueQueryFilter} carrying the entity ID.
  *
  * @author Lukasz Frankowski
  */
-public class EntityQueryFilter<ID extends Serializable> extends QueryFilter<ID> {
+public class EntityQueryFilter<ID extends Serializable> extends SingleValueQueryFilter<ID> {
 
 	public EntityQueryFilter() {
 	}

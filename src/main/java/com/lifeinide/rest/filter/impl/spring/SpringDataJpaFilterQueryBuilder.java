@@ -99,7 +99,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 	}
 
 	@Override
-	public SpringDataJpaFilterQueryBuilder<E> add(String field, QueryFilter filter) {
+	public SpringDataJpaFilterQueryBuilder<E> add(String field, SingleValueQueryFilter filter) {
 		if (filter!=null)
 			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> SpringDataJpaCriteriaBuilderHelper.INSTANCE.buildCriteria(
 				filter.getCondition(), criteriaBuilder, root.get(field), filter.getValue()));

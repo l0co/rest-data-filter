@@ -4,10 +4,7 @@ import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
-import com.lifeinide.rest.filter.filters.DateRangeQueryFilter;
-import com.lifeinide.rest.filter.filters.EntityQueryFilter;
-import com.lifeinide.rest.filter.filters.ListQueryFilter;
-import com.lifeinide.rest.filter.filters.ValueRangeQueryFilter;
+import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearch.FieldAnalyzer;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
@@ -139,9 +136,9 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 			if (filters!=null && !filters.isEmpty()) {
 				for (QueryFilter qf1: filters) {
-					if (!(qf1 instanceof com.lifeinide.rest.filter.filters.QueryFilter))
+					if (!(qf1 instanceof SingleValueQueryFilter))
 						throw new UnsupportedOperationException("Only QueryFilter is supported with ListQueryFilter for full text search");
-					com.lifeinide.rest.filter.filters.QueryFilter qf = (com.lifeinide.rest.filter.filters.QueryFilter) qf1;
+					SingleValueQueryFilter qf = (SingleValueQueryFilter) qf1;
 					if (QueryConjunction.or.equals(filter.getConjunction()) && filters.size()>1) {
 						if (QueryCondition.eq.equals(qf.getCondition()))
 							should(localJunction, field, qf.getValue(), true);
@@ -169,7 +166,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 	}
 
 	@Override
-	public HibernateSearchFilterQueryBuilder<E> add(String field, com.lifeinide.rest.filter.filters.QueryFilter filter) {
+	public HibernateSearchFilterQueryBuilder<E> add(String field, SingleValueQueryFilter filter) {
 		if (filter!=null) {
 			if (QueryCondition.eq.equals(filter.getCondition()))
 				must(context.getBooleanJunction(), field, filter.getValue(), true);

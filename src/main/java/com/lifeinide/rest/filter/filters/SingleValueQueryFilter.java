@@ -8,21 +8,21 @@ import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
  *
  * @author Lukasz Frankowski
  */
-public class QueryFilter<T> implements com.lifeinide.rest.filter.intr.QueryFilter {
+public class SingleValueQueryFilter<T> implements com.lifeinide.rest.filter.intr.QueryFilter {
 
 	protected T value;
 
 	protected QueryCondition condition = QueryCondition.eq;
 
-	public QueryFilter() {
+	public SingleValueQueryFilter() {
 	}
 
-	public QueryFilter(T value) {
+	public SingleValueQueryFilter(T value) {
 		this();
 		this.value = value;
 	}
 
-	public QueryFilter(T value, QueryCondition condition) {
+	public SingleValueQueryFilter(T value, QueryCondition condition) {
 		this(value);
 		this.condition = condition;
 	}
