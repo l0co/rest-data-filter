@@ -17,8 +17,7 @@ import java.time.LocalDate;
 import java.time.Month;
 import java.util.function.Consumer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Lukasz Frankowski
@@ -169,37 +168,82 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testEnumFilter() {
-		// TODOLF implement BaseQueryBuilderTest.testEnumFilter
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("enumVal", new SingleValueQueryFilter<>(EntityEnum.A))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(33, res.getCount());
+			for (E e: res)
+				assertEquals(EntityEnum.A, e.getEnumVal());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("enumVal", new SingleValueQueryFilter<>(EntityEnum.A, QueryCondition.ne))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(67, res.getCount());
+			for (E e: res)
+				assertNotEquals(EntityEnum.A, e.getEnumVal());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("enumVal", new ListQueryFilter<>()
+					.addFilter(new SingleValueQueryFilter<>(EntityEnum.A, QueryCondition.eq))
+					.addFilter(new SingleValueQueryFilter<>(EntityEnum.B, QueryCondition.eq)))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(67, res.getCount());
+			for (E e: res)
+				assertNotEquals(EntityEnum.C, e.getEnumVal());
+		});
 	}
 
 	@Test
 	public void testLongFilter() {
 		// TODOLF implement BaseQueryBuilderTest.testLongFilter
+		doTest(qb -> {
+			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+		});
 	}
 
 	@Test
 	public void testDecimalFilter() {
 		// TODOLF implement BaseQueryBuilderTest.testDecimalFilter
+		doTest(qb -> {
+			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+		});
 	}
 
 	@Test
 	public void testDateFilter() {
 		// TODOLF implement BaseQueryBuilderTest.testDateFilter
+		doTest(qb -> {
+			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+		});
 	}
 
 	@Test
 	public void testAndListFilter() {
 		// TODOLF implement BaseQueryBuilderTest.testAndListFilter
+		doTest(qb -> {
+			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+		});
 	}
 
 	@Test
 	public void testOrListFilter() {
 		// TODOLF implement BaseQueryBuilderTest.testOrListFilter
+		doTest(qb -> {
+			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+		});
 	}
 
 	@Test
 	public void testMultipleFilters() {
 		// TODOLF implement BaseQueryBuilderTest.testOrListFilter
+		doTest(qb -> {
+			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+		});
 	}
 
 	// TODOLF entity test
