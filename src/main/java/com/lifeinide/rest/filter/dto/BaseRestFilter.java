@@ -30,6 +30,11 @@ public class BaseRestFilter implements Serializable, Sortable, Pageable {
 		this.pageSize = pageSize;
 	}
 
+	public BaseRestFilter withPageSize(int pageSize) {
+		this.pageSize = pageSize;
+		return this;
+	}
+
 	@Override
 	public int getPage() {
 		return page;
@@ -39,6 +44,11 @@ public class BaseRestFilter implements Serializable, Sortable, Pageable {
 		this.page = page;
 	}
 
+	public BaseRestFilter withPage(int page) {
+		this.page = page;
+		return this;
+	}
+
 	@Override
 	public List<SortField> getSort() {
 		return sort;
@@ -46,6 +56,19 @@ public class BaseRestFilter implements Serializable, Sortable, Pageable {
 
 	public void setSort(List<SortField> sort) {
 		this.sort = sort;
+	}
+
+	public BaseRestFilter withSort(SortField sort) {
+		getSort().add(sort);
+		return this;
+	}
+
+	public static BaseRestFilter ofDefault() {
+		return new BaseRestFilter();
+	}
+
+	public static BaseRestFilter ofUnpaged() {
+		return ofDefault().withPageSize(0);
 	}
 
 }

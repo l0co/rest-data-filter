@@ -3,7 +3,7 @@
 			 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd"
 			 version="2.0">
 	<persistence-unit name="test-jpa">
-<!--		<class>com.baeldung.hibernate.pojo.Movie</class>-->
+		<class>com.lifeinide.rest.filter.test.hibernate.jpa.JpaEntity</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>

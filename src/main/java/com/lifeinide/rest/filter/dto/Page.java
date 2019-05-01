@@ -17,7 +17,7 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 	protected int pageSize;
 	protected int page;
 	protected long count;
-	protected int pagesCount;
+	protected int pagesCount = 0;
 	protected List<T> data;
 
 	public Page() {
@@ -28,7 +28,8 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 		this.page = page;
 		this.count = count;
 		this.data = data;
-		this.pagesCount = (int) (this.count / pageSize + (this.count % pageSize == 0 ? 0 : 1));
+		if (pageSize > 0)
+			this.pagesCount = (int) (this.count / pageSize + (this.count % pageSize == 0 ? 0 : 1));
 	}
 
 	public Page(Pageable pageable, long count, List<T> data) {

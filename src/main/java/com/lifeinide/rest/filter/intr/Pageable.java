@@ -13,7 +13,7 @@ public interface Pageable {
 	}
 
 	default boolean isPaged() {
-		return getPage() > 0;
+		return getPageSize() > 0;
 	}
 
 
