@@ -355,18 +355,25 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 	}
 
 	@Test
-	public void testAndListFilter() {
-		// TODOLF implement BaseQueryBuilderTest.testAndListFilter
+	public void testListFilter() {
+		// and condition
 		doTest(qb -> {
-			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+			PageableResult<E> res = qb
+				.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(10L).ge(), SingleValueQueryFilter.of(20L).le()).and())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(11, res.getCount());
+			for (E e: res)
+				assertTrue(e.getLongVal() >= 10 && e.getLongVal() <= 20);
 		});
-	}
 
-	@Test
-	public void testOrListFilter() {
-		// TODOLF implement BaseQueryBuilderTest.testOrListFilter
+		// or condition
 		doTest(qb -> {
-			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+			PageableResult<E> res = qb
+				.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(10L).lt(), SingleValueQueryFilter.of(20L).gt()))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(89, res.getCount());
+			for (E e: res)
+				assertTrue(e.getLongVal() < 10 || e.getLongVal() > 20);
 		});
 	}
 
