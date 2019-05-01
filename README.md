@@ -166,10 +166,12 @@ public PageableResult<User> listUsers(UserFilter req) {
 
 This lib provides following query builders implementation, ready to be used with default filters:
 
-1. [JpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/jpa/JpaFilterQueryBuilder.java) - provides query builder for JPA criteria API.
-1. [HibernateSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateSearchFilterQueryBuilder.java) - provides query builder for Hibernate Search.
-1. [SpringDataJpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataJpaFilterQueryBuilder.java) - provides query builder for Spring Data JPA.
-1. [SpringDataMongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataMongoFilterQueryBuilder.java) - provides query builder for Spring Data MongoDB.
+| Class | Description | Status |
+|------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|-------------------|
+| [JpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/jpa/JpaFilterQueryBuilder.java) | Provides query builder for JPA criteria API. | Production ready. |
+| [HibernateSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateSearchFilterQueryBuilder.java) | Provides query builder for Hibernate Search. | Untested. |
+| [SpringDataJpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataJpaFilterQueryBuilder.java) | Provides query builder for Spring Data JPA. | Untested. |
+| [SpringDataMongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataMongoFilterQueryBuilder.java) | Provides query builder for Spring Data MongoDB. | Untested. |
 
 Note, that the underlying dependencies are not included by default by this lib and to enable given persistence storage support you need to add dependencies described in the specific query builder class header to your project.
 
