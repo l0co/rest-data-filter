@@ -43,9 +43,8 @@ public class DateRangeQueryFilter implements QueryFilter {
 		return range;
 	}
 
-	public DateRangeQueryFilter setRange(DateRange range) {
+	public void setRange(DateRange range) {
 		this.range = range;
-		return this;
 	}
 
 	protected LocalDate getFixedTo(LocalDate date) {
@@ -86,10 +85,48 @@ public class DateRangeQueryFilter implements QueryFilter {
 		throw new UnsupportedOperationException(String.format("Conversion between LocalDate and: %s is not supported", clazz.getSimpleName()));
 	}
 
+	public DateRangeQueryFilter with(DateRange range) {
+		setRange(range);
+		return this;
+	}
+
 	public DateRangeQueryFilter with(LocalDate from, LocalDate to) {
+		setRange(DateRange.CUSTOM);
 		setFrom(from);
 		setTo(to);
 		return this;
+	}
+
+	public DateRangeQueryFilter from(LocalDate from) {
+		setRange(DateRange.CUSTOM);
+		setFrom(from);
+		return this;
+	}
+
+	public DateRangeQueryFilter to(LocalDate to) {
+		setRange(DateRange.CUSTOM);
+		setTo(to);
+		return this;
+	}
+
+	public static DateRangeQueryFilter of() {
+		return new DateRangeQueryFilter();
+	}
+
+	public static DateRangeQueryFilter of(DateRange range) {
+		return new DateRangeQueryFilter().with(range);
+	}
+
+	public static DateRangeQueryFilter of(LocalDate from, LocalDate to) {
+		return new DateRangeQueryFilter().with(from ,to);
+	}
+
+	public static DateRangeQueryFilter ofFrom(LocalDate from) {
+		return new DateRangeQueryFilter().from(from);
+	}
+
+	public static DateRangeQueryFilter ofTo(LocalDate to) {
+		return new DateRangeQueryFilter().to(to);
 	}
 
 	@Override

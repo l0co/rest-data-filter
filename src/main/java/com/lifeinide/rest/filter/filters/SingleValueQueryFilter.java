@@ -17,14 +17,49 @@ public class SingleValueQueryFilter<T> implements com.lifeinide.rest.filter.intr
 	public SingleValueQueryFilter() {
 	}
 
-	public SingleValueQueryFilter(T value) {
-		this();
-		this.value = value;
+	public SingleValueQueryFilter<T> with(T value) {
+		setValue(value);
+		return this;
 	}
 
-	public SingleValueQueryFilter(T value, QueryCondition condition) {
-		this(value);
-		this.condition = condition;
+	public SingleValueQueryFilter<T> eq() {
+		setCondition(QueryCondition.eq);
+		return this;
+	}
+
+	public SingleValueQueryFilter<T> ne() {
+		setCondition(QueryCondition.ne);
+		return this;
+	}
+
+	public SingleValueQueryFilter<T> gt() {
+		setCondition(QueryCondition.gt);
+		return this;
+	}
+
+	public SingleValueQueryFilter<T> ge() {
+		setCondition(QueryCondition.ge);
+		return this;
+	}
+
+	public SingleValueQueryFilter<T> lt() {
+		setCondition(QueryCondition.lt);
+		return this;
+	}
+
+	public SingleValueQueryFilter<T> le() {
+		setCondition(QueryCondition.le);
+		return this;
+	}
+
+	public SingleValueQueryFilter<T> isNull() {
+		setCondition(QueryCondition.isNull);
+		return this;
+	}
+
+	public SingleValueQueryFilter<T> notNull() {
+		setCondition(QueryCondition.notNull);
+		return this;
 	}
 
 	public T getValue() {
@@ -46,6 +81,18 @@ public class SingleValueQueryFilter<T> implements com.lifeinide.rest.filter.intr
 	@Override
 	public void accept(FilterQueryBuilder builder, String field) {
 		builder.add(field, this);
+	}
+
+	public static <T> SingleValueQueryFilter<T> of(T value) {
+		return new SingleValueQueryFilter<T>().with(value);
+	}
+
+	public static SingleValueQueryFilter ofNull() {
+		return new SingleValueQueryFilter().isNull();
+	}
+
+	public static SingleValueQueryFilter ofNotNull() {
+		return new SingleValueQueryFilter().notNull();
 	}
 
 }

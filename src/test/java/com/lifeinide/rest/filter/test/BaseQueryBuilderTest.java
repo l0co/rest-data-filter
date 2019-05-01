@@ -1,10 +1,9 @@
 package com.lifeinide.rest.filter.test;
 
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
-import com.lifeinide.rest.filter.enums.QueryCondition;
-import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.ListQueryFilter;
 import com.lifeinide.rest.filter.filters.SingleValueQueryFilter;
+import com.lifeinide.rest.filter.filters.ValueRangeQueryFilter;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
 import org.junit.jupiter.api.BeforeAll;
@@ -92,7 +91,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 	public void testStringFilter() {
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new SingleValueQueryFilter<>("aa"))
+				.add("stringVal", SingleValueQueryFilter.of("aa"))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(1, res.getCount());
 			assertEquals("aa", res.getData().iterator().next().getStringVal());
@@ -100,67 +99,63 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new SingleValueQueryFilter<>("aa", QueryCondition.ne))
+				.add("stringVal", SingleValueQueryFilter.of("aa").ne())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(99, res.getCount());
 		});
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new SingleValueQueryFilter<>("aa", QueryCondition.ge))
+				.add("stringVal", SingleValueQueryFilter.of("aa").ge())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 		});
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new SingleValueQueryFilter<>("aa", QueryCondition.gt))
+				.add("stringVal", SingleValueQueryFilter.of("aa").gt())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(99, res.getCount());
 		});
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new SingleValueQueryFilter<>("ba", QueryCondition.le))
+				.add("stringVal", SingleValueQueryFilter.of("ba").le())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(27, res.getCount());
 		});
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new SingleValueQueryFilter<>("ba", QueryCondition.lt))
+				.add("stringVal", SingleValueQueryFilter.of("ba").lt())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(26, res.getCount());
 		});
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new SingleValueQueryFilter<>(null, QueryCondition.notNull))
+				.add("stringVal", SingleValueQueryFilter.ofNotNull())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 		});
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new SingleValueQueryFilter<>(null, QueryCondition.isNull))
+				.add("stringVal", SingleValueQueryFilter.ofNull())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(0, res.getCount());
 		});
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new ListQueryFilter<>()
-					.addFilter(new SingleValueQueryFilter<>("aa"))
-					.addFilter(new SingleValueQueryFilter<>("ab")))
+				.add("stringVal", ListQueryFilter.of(SingleValueQueryFilter.of("aa"), SingleValueQueryFilter.of("ab")))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(2, res.getCount());
 		});
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("stringVal", new ListQueryFilter<>(QueryConjunction.and)
-					.addFilter(new SingleValueQueryFilter<>("aa"))
-					.addFilter(new SingleValueQueryFilter<>("ab")))
+				.add("stringVal", ListQueryFilter.of(SingleValueQueryFilter.of("aa"), SingleValueQueryFilter.of("ab")).and())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(0, res.getCount());
 		});
@@ -170,7 +165,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 	public void testEnumFilter() {
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("enumVal", new SingleValueQueryFilter<>(EntityEnum.A))
+				.add("enumVal", SingleValueQueryFilter.of(EntityEnum.A))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(33, res.getCount());
 			for (E e: res)
@@ -179,7 +174,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("enumVal", new SingleValueQueryFilter<>(EntityEnum.A, QueryCondition.ne))
+				.add("enumVal", SingleValueQueryFilter.of(EntityEnum.A).ne())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(67, res.getCount());
 			for (E e: res)
@@ -188,9 +183,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 		doTest(qb -> {
 			PageableResult<E> res = qb
-				.add("enumVal", new ListQueryFilter<>()
-					.addFilter(new SingleValueQueryFilter<>(EntityEnum.A, QueryCondition.eq))
-					.addFilter(new SingleValueQueryFilter<>(EntityEnum.B, QueryCondition.eq)))
+				.add("enumVal", ListQueryFilter.of(SingleValueQueryFilter.of(EntityEnum.A), SingleValueQueryFilter.of(EntityEnum.B)))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(67, res.getCount());
 			for (E e: res)
@@ -200,9 +193,33 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testLongFilter() {
-		// TODOLF implement BaseQueryBuilderTest.testLongFilter
 		doTest(qb -> {
-			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+			PageableResult<E> res = qb
+				.add("longVal", SingleValueQueryFilter.of(1L))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(1, res.getCount());
+			assertEquals(1L, (long) res.iterator().next().getLongVal());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("longVal", SingleValueQueryFilter.of(1L).ge())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(100, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("longVal", SingleValueQueryFilter.of(1L).gt())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(99, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("longVal", ValueRangeQueryFilter.ofFrom(10L))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(90, res.getCount());
 		});
 	}
 

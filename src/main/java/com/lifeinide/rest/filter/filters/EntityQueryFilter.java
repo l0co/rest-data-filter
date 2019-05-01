@@ -1,6 +1,5 @@
 package com.lifeinide.rest.filter.filters;
 
-import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 
 import java.io.Serializable;
@@ -13,14 +12,6 @@ import java.io.Serializable;
 public class EntityQueryFilter<ID extends Serializable> extends SingleValueQueryFilter<ID> {
 
 	public EntityQueryFilter() {
-	}
-
-	public EntityQueryFilter(ID value) {
-		super(value);
-	}
-
-	public EntityQueryFilter(ID value, QueryCondition condition) {
-		super(value, condition);
 	}
 
 	@Override

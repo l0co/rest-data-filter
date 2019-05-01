@@ -5,6 +5,7 @@ import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.QueryFilter;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -38,6 +39,11 @@ public class ListQueryFilter<F extends QueryFilter> implements QueryFilter {
 		return this;
 	}
 
+	public ListQueryFilter<F> and() {
+		setConjunction(QueryConjunction.and);
+		return this;
+	}
+
 	public QueryConjunction getConjunction() {
 		return conjunction;
 	}
@@ -50,6 +56,13 @@ public class ListQueryFilter<F extends QueryFilter> implements QueryFilter {
 	@Override
 	public void accept(FilterQueryBuilder builder, String field) {
 		builder.add(field, this);
+	}
+
+	@SafeVarargs
+	public static <F extends QueryFilter> ListQueryFilter<F> of(F ... filters) {
+		ListQueryFilter<F> filter = new ListQueryFilter<>();
+		Arrays.stream(filters).forEach(filter::addFilter);
+		return filter;
 	}
 
 }
