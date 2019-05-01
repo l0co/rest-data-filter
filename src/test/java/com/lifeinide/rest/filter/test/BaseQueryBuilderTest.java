@@ -219,7 +219,21 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 			PageableResult<E> res = qb
 				.add("longVal", ValueRangeQueryFilter.ofFrom(10L))
 				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(90, res.getCount());
+			assertEquals(91, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("longVal", ValueRangeQueryFilter.ofTo(10L))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(10, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("longVal", ValueRangeQueryFilter.of(10L, 20L))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(11, res.getCount());
 		});
 	}
 
