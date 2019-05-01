@@ -1,5 +1,8 @@
 package com.lifeinide.rest.filter.test.hibernate.jpa;
 
+import com.lifeinide.rest.filter.test.EntityEnum;
+import com.lifeinide.rest.filter.test.IEntity;
+
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -11,76 +14,83 @@ import java.time.LocalDate;
  * @author Lukasz Frankowski
  */
 @Entity
-public class JpaEntity {
+public class JpaEntity implements IEntity {
 
 	@Id
 	private Long id;
 
-	protected String s;
+	protected String stringVal;
 
-	protected Long l;
+	protected Long longVal;
 
-	protected BigDecimal b;
+	protected BigDecimal decimalVal;
 
-	protected LocalDate d;
+	protected LocalDate dateVal;
 
 	@Enumerated(EnumType.STRING)
-	protected JpaEntityEnum e;
+	protected EntityEnum enumVal;
 
 	public JpaEntity() {
 	}
 
-	public JpaEntity(long id, String s, Long l, BigDecimal b, LocalDate d, JpaEntityEnum e) {
-		this.id = id;
-		this.s = s;
-		this.l = l;
-		this.b = b;
-		this.d = d;
-		this.e = e;
-	}
-
+	@Override
 	public Long getId() {
 		return id;
 	}
 
-	public String getS() {
-		return s;
+	@Override
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public void setS(String s) {
-		this.s = s;
+	@Override
+	public String getStringVal() {
+		return stringVal;
 	}
 
-	public Long getL() {
-		return l;
+	@Override
+	public void setStringVal(String stringVal) {
+		this.stringVal = stringVal;
 	}
 
-	public void setL(Long l) {
-		this.l = l;
+	@Override
+	public Long getLongVal() {
+		return longVal;
 	}
 
-	public BigDecimal getB() {
-		return b;
+	@Override
+	public void setLongVal(Long longVal) {
+		this.longVal = longVal;
 	}
 
-	public void setB(BigDecimal b) {
-		this.b = b;
+	@Override
+	public BigDecimal getDecimalVal() {
+		return decimalVal;
 	}
 
-	public LocalDate getD() {
-		return d;
+	@Override
+	public void setDecimalVal(BigDecimal decimalVal) {
+		this.decimalVal = decimalVal;
 	}
 
-	public void setD(LocalDate d) {
-		this.d = d;
+	@Override
+	public LocalDate getDateVal() {
+		return dateVal;
 	}
 
-	public JpaEntityEnum getE() {
-		return e;
+	@Override
+	public void setDateVal(LocalDate dateVal) {
+		this.dateVal = dateVal;
 	}
 
-	public void setE(JpaEntityEnum e) {
-		this.e = e;
+	@Override
+	public EntityEnum getEnumVal() {
+		return enumVal;
+	}
+
+	@Override
+	public void setEnumVal(EntityEnum enumVal) {
+		this.enumVal = enumVal;
 	}
 
 }
