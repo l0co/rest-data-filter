@@ -379,9 +379,20 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testMultipleFilters() {
-		// TODOLF implement BaseQueryBuilderTest.testOrListFilter
 		doTest(qb -> {
-			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+			PageableResult<E> res = qb
+				.add("stringVal", SingleValueQueryFilter.of("ba").ge())
+				.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(36L).le(), SingleValueQueryFilter.of(50L).ge()))
+				.add("enumVal", SingleValueQueryFilter.of(EntityEnum.A))
+				.add("dateVal", DateRangeQueryFilter.ofTo(TODAY))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(18, res.getCount());
+			for (E e: res) {
+				assertTrue(e.getStringVal().compareTo("ba") >= 0);
+				assertTrue(e.getLongVal() <= 36L || e.getLongVal() >= 50L);
+				assertEquals(EntityEnum.A, e.getEnumVal());
+				assertTrue(e.getDateVal().isBefore(TODAY));
+			}
 		});
 	}
 
