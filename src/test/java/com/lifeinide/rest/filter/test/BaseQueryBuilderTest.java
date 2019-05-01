@@ -1,11 +1,14 @@
 package com.lifeinide.rest.filter.test;
 
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
+import com.lifeinide.rest.filter.enums.DateRange;
+import com.lifeinide.rest.filter.filters.DateRangeQueryFilter;
 import com.lifeinide.rest.filter.filters.ListQueryFilter;
 import com.lifeinide.rest.filter.filters.SingleValueQueryFilter;
 import com.lifeinide.rest.filter.filters.ValueRangeQueryFilter;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -23,6 +26,8 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 @TestInstance(Lifecycle.PER_CLASS)
 public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQueryBuilder<E, ?, F>> {
+
+	public static final LocalDate TODAY = LocalDate.of(2018, Month.APRIL, 1);
 
 	/**
 	 * Builds empty entity object
@@ -50,6 +55,16 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 			entity.setEnumVal(EntityEnum.values()[i % EntityEnum.values().length]);
 			save.accept(entity);
 		}
+	}
+
+	@BeforeAll
+	public void setToday() {
+		DateRange.setToday(() -> TODAY);
+	}
+
+	@AfterAll
+	public void resetToday() {
+		DateRange.resetToday();
 	}
 
 	@Test
@@ -239,17 +254,103 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testDecimalFilter() {
-		// TODOLF implement BaseQueryBuilderTest.testDecimalFilter
 		doTest(qb -> {
-			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+			PageableResult<E> res = qb
+				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(1, res.getCount());
+			assertEquals(new BigDecimal("1.00"), res.iterator().next().getDecimalVal());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")).ge())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(100, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")).gt())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(99, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("decimalVal", ValueRangeQueryFilter.ofFrom(new BigDecimal("10.00")))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(91, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("decimalVal", ValueRangeQueryFilter.ofTo(new BigDecimal("10.00")))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(10, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("decimalVal", ValueRangeQueryFilter.of(new BigDecimal("10.00"), new BigDecimal("20.00")))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(11, res.getCount());
 		});
 	}
 
 	@Test
 	public void testDateFilter() {
-		// TODOLF implement BaseQueryBuilderTest.testDateFilter
 		doTest(qb -> {
-			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
+			PageableResult<E> res = qb
+				.add("dateVal", DateRangeQueryFilter.ofCurrentMonth())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(10, res.getCount());
+			for (E e: res)
+				assertEquals(Month.APRIL, e.getDateVal().getMonth());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("dateVal", DateRangeQueryFilter.ofPreviousMonth())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(31, res.getCount());
+			for (E e: res)
+				assertEquals(Month.MARCH, e.getDateVal().getMonth());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("dateVal", DateRangeQueryFilter.ofCurrentYear())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(100, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("dateVal", DateRangeQueryFilter.ofPreviousYear())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(0, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("dateVal", DateRangeQueryFilter.ofLast30Days())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(31, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("dateVal", DateRangeQueryFilter.ofLast90Days())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(91, res.getCount());
+		});
+
+		doTest(qb -> {
+			PageableResult<E> res = qb
+				.add("dateVal", DateRangeQueryFilter.of(LocalDate.of(2018, Month.FEBRUARY, 1), LocalDate.of(2018, Month.FEBRUARY, 10)))
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(10, res.getCount());
 		});
 	}
 
@@ -277,6 +378,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 		});
 	}
 
-	// TODOLF entity test
+	// TODOLF entity tests
+	// TODOLF order tests
 
 }

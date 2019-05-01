@@ -109,24 +109,72 @@ public class DateRangeQueryFilter implements QueryFilter {
 		return this;
 	}
 
+	public DateRangeQueryFilter last30Days() {
+		return with(DateRange.LAST_30_DAYS);
+	}
+
+	public DateRangeQueryFilter last90Days() {
+		return with(DateRange.LAST_90_DAYS);
+	}
+
+	public DateRangeQueryFilter currentMonth() {
+		return with(DateRange.CURRENT_MONTH);
+	}
+
+	public DateRangeQueryFilter previousMonth() {
+		return with(DateRange.PREVIOUS_MONTH);
+	}
+
+	public DateRangeQueryFilter currentYear() {
+		return with(DateRange.CURRENT_YEAR);
+	}
+
+	public DateRangeQueryFilter previousYear() {
+		return with(DateRange.PREVIOUS_YEAR);
+	}
+
 	public static DateRangeQueryFilter of() {
 		return new DateRangeQueryFilter();
 	}
 
+	public static DateRangeQueryFilter ofLast30Days() {
+		return of().with(DateRange.LAST_30_DAYS);
+	}
+
+	public static DateRangeQueryFilter ofLast90Days() {
+		return of().with(DateRange.LAST_90_DAYS);
+	}
+
+	public static DateRangeQueryFilter ofCurrentMonth() {
+		return of().with(DateRange.CURRENT_MONTH);
+	}
+
+	public static DateRangeQueryFilter ofPreviousMonth() {
+		return of().with(DateRange.PREVIOUS_MONTH);
+	}
+
+	public static DateRangeQueryFilter ofCurrentYear() {
+		return of().with(DateRange.CURRENT_YEAR);
+	}
+
+	public static DateRangeQueryFilter ofPreviousYear() {
+		return of().with(DateRange.PREVIOUS_YEAR);
+	}
+
 	public static DateRangeQueryFilter of(DateRange range) {
-		return new DateRangeQueryFilter().with(range);
+		return of().with(range);
 	}
 
 	public static DateRangeQueryFilter of(LocalDate from, LocalDate to) {
-		return new DateRangeQueryFilter().with(from ,to);
+		return of().with(from ,to);
 	}
 
 	public static DateRangeQueryFilter ofFrom(LocalDate from) {
-		return new DateRangeQueryFilter().from(from);
+		return of().from(from);
 	}
 
 	public static DateRangeQueryFilter ofTo(LocalDate to) {
-		return new DateRangeQueryFilter().to(to);
+		return of().to(to);
 	}
 
 	@Override

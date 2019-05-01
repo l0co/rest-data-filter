@@ -3,9 +3,12 @@ package com.lifeinide.rest.filter.enums;
 import com.lifeinide.rest.filter.filters.DateRangeQueryFilter;
 
 import java.time.LocalDate;
+import java.util.function.Supplier;
 
 /**
  * Constants for {@link DateRangeQueryFilter}.
+ *
+ * If you want to change the logic of providing today date, use {@link #setToday(Supplier)} static method.
  *
  * @author Lukasz Frankowski
  */
@@ -17,12 +20,12 @@ public enum DateRange {
 
 		@Override
 		public LocalDate getFrom() {
-			return LocalDate.now().atStartOfDay().minusDays(30).toLocalDate();
+			return today().atStartOfDay().minusDays(30).toLocalDate();
 		}
 
 		@Override
 		public LocalDate getTo() {
-			return LocalDate.now().atStartOfDay().toLocalDate();
+			return today().atStartOfDay().toLocalDate();
 		}
 		
 	},
@@ -31,12 +34,12 @@ public enum DateRange {
 
 		@Override
 		public LocalDate getFrom() {
-			return LocalDate.now().atStartOfDay().minusDays(90).toLocalDate();
+			return today().atStartOfDay().minusDays(90).toLocalDate();
 		}
 
 		@Override
 		public LocalDate getTo() {
-			return LocalDate.now().atStartOfDay().toLocalDate();
+			return today().atStartOfDay().toLocalDate();
 		}
 
 	},
@@ -45,7 +48,7 @@ public enum DateRange {
 
 		@Override
 		public LocalDate getFrom() {
-			return LocalDate.now().atStartOfDay().withDayOfMonth(1).toLocalDate();
+			return today().atStartOfDay().withDayOfMonth(1).toLocalDate();
 		}
 
 		@Override
@@ -103,6 +106,24 @@ public enum DateRange {
 
 	public LocalDate getTo() {
 		return null;
+	}
+
+	/**********************************************************************************************************
+	 * Today change support
+	 **********************************************************************************************************/
+
+	protected static Supplier<LocalDate> TODAY_SUPPLIER = LocalDate::now;
+
+	public static void setToday(Supplier<LocalDate> s) {
+		TODAY_SUPPLIER = s;
+	}
+
+	public static void resetToday() {
+		TODAY_SUPPLIER = LocalDate::now;
+	}
+
+	public static LocalDate today() {
+		return TODAY_SUPPLIER.get();
 	}
 
 }
