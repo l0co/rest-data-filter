@@ -3,9 +3,13 @@ package com.lifeinide.rest.filter.test.hibernate.search;
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearch;
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearchFilterQueryBuilder;
 import com.lifeinide.rest.filter.test.hibernate.BaseHibernateJpaTest;
+import org.apache.commons.io.FileUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 
 import javax.persistence.EntityManager;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.function.BiConsumer;
 
 /**
@@ -18,6 +22,11 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<Long, 
 	@BeforeAll
 	public void populateData() {
 		doWithEntityManager(em -> populateData(em::persist));
+	}
+
+	@AfterAll
+	public void deleteIndex() throws IOException {
+		FileUtils.deleteDirectory(Path.of("tmp").toFile());
 	}
 
 	@Override
