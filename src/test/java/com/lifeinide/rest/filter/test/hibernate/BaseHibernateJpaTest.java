@@ -10,13 +10,19 @@ import org.junit.jupiter.api.BeforeAll;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
+import java.io.Serializable;
 import java.util.function.Consumer;
 
 /**
+ * @see BaseQueryBuilderTest
  * @author Lukasz Frankowski
  */
-public abstract class BaseHibernateJpaTest<A extends IBaseEntity, E extends IEntity<A>, F extends FilterQueryBuilder<E, ?, F>>
-extends BaseQueryBuilderTest<EntityManager, A, E, F> {
+public abstract class BaseHibernateJpaTest<
+	ID extends Serializable,
+	A extends IBaseEntity<ID>,
+	E extends IEntity<ID, A>,
+	F extends FilterQueryBuilder<E, ?, F>
+> extends BaseQueryBuilderTest<EntityManager, ID, A, E, F> {
 
 	public static final String PERSISTENCE_UNIT_NAME = "test-jpa";
 

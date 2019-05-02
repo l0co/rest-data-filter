@@ -9,24 +9,24 @@ import javax.persistence.Id;
  * @author Lukasz Frankowski
  */
 @Entity
-public class JpaAssociatedEntity implements IBaseEntity {
+public class JpaAssociatedEntity implements IBaseEntity<Long> {
 
-	@Id String id;
+	@Id Long id;
 
 	public JpaAssociatedEntity() {
 	}
 
-	public JpaAssociatedEntity(String id) {
+	public JpaAssociatedEntity(Long id) {
 		this.id = id;
 	}
 
 	@Override
-	public String getId() {
+	public Long getId() {
 		return id;
 	}
 
 	@Override
-	public void setId(String id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	

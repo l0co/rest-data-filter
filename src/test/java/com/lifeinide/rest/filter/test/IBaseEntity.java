@@ -1,12 +1,14 @@
 package com.lifeinide.rest.filter.test;
 
+import java.io.Serializable;
+
 /**
  * @author Lukasz Frankowski
  */
-public interface IBaseEntity {
+public interface IBaseEntity<ID extends Serializable> {
 
-	String getId();
+	ID getId();
 
-	void setId(String id);
+	void setId(ID id);
 	
 }

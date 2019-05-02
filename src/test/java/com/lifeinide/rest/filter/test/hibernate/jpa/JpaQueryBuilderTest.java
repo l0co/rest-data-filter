@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 /**
  * @author Lukasz Frankowski
  */
-public class JpaQueryBuilderTest extends BaseHibernateJpaTest<JpaAssociatedEntity, JpaEntity, JpaFilterQueryBuilder<JpaEntity>> {
+public class JpaQueryBuilderTest extends BaseHibernateJpaTest<Long, JpaAssociatedEntity, JpaEntity, JpaFilterQueryBuilder<JpaEntity>> {
 
 	@BeforeAll
 	public void populateData() {
@@ -18,13 +18,13 @@ public class JpaQueryBuilderTest extends BaseHibernateJpaTest<JpaAssociatedEntit
 	}
 
 	@Override
-	protected JpaEntity buildEntity() {
-		return new JpaEntity();
+	protected JpaEntity buildEntity(Long previousId) {
+		return new JpaEntity(previousId==null ? 1L : previousId+1);
 	}
 
 	@Override
 	protected JpaAssociatedEntity buildAssociatedEntity() {
-		return new JpaAssociatedEntity("1");
+		return new JpaAssociatedEntity(1L);
 	}
 
 	@Override

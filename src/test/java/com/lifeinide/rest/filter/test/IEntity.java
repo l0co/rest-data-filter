@@ -1,5 +1,6 @@
 package com.lifeinide.rest.filter.test;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -7,7 +8,7 @@ import java.time.LocalDate;
  * @param <A> Associated entity type.
  * @author Lukasz Frankowski
  */
-public interface IEntity<A extends IBaseEntity> extends IBaseEntity {
+public interface IEntity<ID extends Serializable, A extends IBaseEntity> extends IBaseEntity<ID> {
 
 	String getStringVal();
 
