@@ -9,22 +9,7 @@ import org.hibernate.search.bridge.builtin.NumberBridge;
  * A {@link FieldBridge} used to store {@link Number} values so that they are searchable using {@link SingleValueQueryFilter} and
  * {@link ValueRangeQueryFilter}.
  *
- * <p>
- * By default Lucene performs text searchs even for ranges, so fox example "2" > "10" for Lucene. To assert proper numbers filtering
- * for Lucene we prepend all number with zeros, so that "*0002" > "*0010" and we can apply filtering properly.
- * </p>
- *
- * Usage:
- * <pre>{@code
- * @Field(analyze = Analyze.NO, norms = Norms.NO)
- * @FieldBridge(impl = RangeNumberBridge.class)
- * protected Long longVal;
- *
- * @Field(analyze = Analyze.NO, norms = Norms.NO)
- * @FieldBridge(impl = RangeNumberBridge.class)
- * protected BigDecimal decimalVal;
- * }</pre>
- *
+ * @see HibernateSearch How to use this bridge in searchable entities
  * @author Lukasz Frankowski
  */
 public class RangeNumberBridge extends NumberBridge {
