@@ -3,7 +3,6 @@ package com.lifeinide.rest.filter.test;
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.dto.Sort;
 import com.lifeinide.rest.filter.enums.DateRange;
-import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
@@ -85,10 +84,10 @@ public abstract class BaseQueryBuilderTest<
 	}
 
 	/**
-	 * Whether supports {@code >} and {@code <} inequalites, i.e. {@link QueryCondition#ge} and {@link QueryCondition#le}. For example
-	 * lucene queries don't support them. They support only non-strict equalites {@code >=} and {@code <=}.
+	 * Whether this persistence storage supports specific test feature.
+	 * @see QueryBuilderTestFeature
 	 */
-	protected boolean supportsStrictInequalities() {
+	protected boolean supports(QueryBuilderTestFeature feature) {
 		return true;
 	}
 
@@ -161,7 +160,7 @@ public abstract class BaseQueryBuilderTest<
 			assertEquals(100, res.getCount());
 		});
 
-		if (supportsStrictInequalities())
+		if (supports(QueryBuilderTestFeature.STRICT_INEQUALITIES))
 			doTest((pc, qb) -> {
 				PageableResult<E> res = qb
 					.add("stringVal", SingleValueQueryFilter.of("aa").gt())
@@ -176,7 +175,7 @@ public abstract class BaseQueryBuilderTest<
 			assertEquals(27, res.getCount());
 		});
 
-		if (supportsStrictInequalities())
+		if (supports(QueryBuilderTestFeature.STRICT_INEQUALITIES))
 			doTest((pc, qb) -> {
 				PageableResult<E> res = qb
 					.add("stringVal", SingleValueQueryFilter.of("ba").lt())
@@ -184,19 +183,21 @@ public abstract class BaseQueryBuilderTest<
 				assertEquals(26, res.getCount());
 			});
 
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("stringVal", SingleValueQueryFilter.ofNotNull())
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(100, res.getCount());
-		});
+		if (supports(QueryBuilderTestFeature.NULLS))
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("stringVal", SingleValueQueryFilter.ofNotNull())
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(100, res.getCount());
+			});
 
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("stringVal", SingleValueQueryFilter.ofNull())
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(0, res.getCount());
-		});
+		if (supports(QueryBuilderTestFeature.NULLS))
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("stringVal", SingleValueQueryFilter.ofNull())
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(0, res.getCount());
+			});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
@@ -260,7 +261,7 @@ public abstract class BaseQueryBuilderTest<
 			assertEquals(100, res.getCount());
 		});
 
-		if (supportsStrictInequalities())
+		if (supports(QueryBuilderTestFeature.STRICT_INEQUALITIES))
 			doTest((pc, qb) -> {
 				PageableResult<E> res = qb
 					.add("longVal", SingleValueQueryFilter.of(1L).gt())
@@ -405,7 +406,7 @@ public abstract class BaseQueryBuilderTest<
 		});
 
 		// or condition
-		if (supportsStrictInequalities())
+		if (supports(QueryBuilderTestFeature.STRICT_INEQUALITIES))
 			doTest((pc, qb) -> {
 				PageableResult<E> res = qb
 					.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(10L).lt(), SingleValueQueryFilter.of(20L).gt()))

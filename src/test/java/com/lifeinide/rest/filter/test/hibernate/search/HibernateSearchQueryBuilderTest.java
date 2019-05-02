@@ -2,6 +2,7 @@ package com.lifeinide.rest.filter.test.hibernate.search;
 
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearch;
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearchFilterQueryBuilder;
+import com.lifeinide.rest.filter.test.QueryBuilderTestFeature;
 import com.lifeinide.rest.filter.test.hibernate.BaseHibernateJpaTest;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
@@ -36,8 +37,14 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<Long, 
 	}
 
 	@Override
-	protected boolean supportsStrictInequalities() {
-		return false;
+	protected boolean supports(QueryBuilderTestFeature feature) {
+		switch (feature) {
+			case STRICT_INEQUALITIES:
+			case NULLS:
+				return false;
+		}
+
+		return super.supports(feature);
 	}
 
 	@Override
