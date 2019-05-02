@@ -371,9 +371,12 @@ public abstract class BaseQueryBuilderTest<
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofPreviousMonth())
 				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(31, res.getCount());
-			for (E e: res)
-				assertEquals(Month.MARCH, e.getDateVal().getMonth());
+			if (supports(QueryBuilderTestFeature.STRICT_INEQUALITIES)) {
+				assertEquals(31, res.getCount());
+				for (E e: res)
+					assertEquals(Month.MARCH, e.getDateVal().getMonth());
+			} else
+				assertEquals(32, res.getCount());
 		});
 
 		doTest((pc, qb) -> {
@@ -387,28 +390,28 @@ public abstract class BaseQueryBuilderTest<
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofPreviousYear())
 				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(0, res.getCount());
+			assertEquals(supports(QueryBuilderTestFeature.STRICT_INEQUALITIES) ? 0 : 1, res.getCount());
 		});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofLast30Days())
 				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(31, res.getCount());
+			assertEquals(supports(QueryBuilderTestFeature.STRICT_INEQUALITIES) ? 31 : 32, res.getCount());
 		});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofLast90Days())
 				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(91, res.getCount());
+			assertEquals(supports(QueryBuilderTestFeature.STRICT_INEQUALITIES) ? 91 : 92, res.getCount());
 		});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.of(LocalDate.of(2018, Month.FEBRUARY, 1), LocalDate.of(2018, Month.FEBRUARY, 10)))
 				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(10, res.getCount());
+			assertEquals(supports(QueryBuilderTestFeature.STRICT_INEQUALITIES) ? 10 : 11, res.getCount());
 		});
 	}
 
@@ -453,10 +456,12 @@ public abstract class BaseQueryBuilderTest<
 				assertEquals(EntityEnum.A, e.getEnumVal());
 				assertTrue(e.getDateVal().isBefore(TODAY));
 
-				// test sorting
-				if (prev != null)
-					assertTrue(prev.getLongVal() > e.getLongVal());
-				prev = e;
+				if (supports(QueryBuilderTestFeature.SORTING)) {
+					// test sorting
+					if (prev != null)
+						assertTrue(prev.getLongVal() > e.getLongVal());
+					prev = e;
+				}
 			}
 		});
 	}

@@ -25,4 +25,9 @@ public enum QueryBuilderTestFeature {
 	 */
 	STRICT_DECIMALS,
 
+	/**
+	 * Whether the storage supports custom elements ordering. Lucene doesn't support it but returns data according to their search score.
+	 */
+	SORTING,
+
 }

@@ -35,7 +35,7 @@ public class HibernateSearchEntity implements IEntity<Long, HibernateSearchAssoc
 	@FieldBridge(impl = RangeNumberBridge.class)
 	protected BigDecimal decimalVal;
 
-	@Field(analyze = Analyze.NO, norms = Norms.NO) // TODOLF remove store
+	@Field(analyze = Analyze.NO, norms = Norms.NO)
 	protected LocalDate dateVal;
 
 	@Enumerated(EnumType.STRING)

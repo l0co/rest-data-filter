@@ -42,6 +42,7 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<Long, 
 			case STRICT_INEQUALITIES:
 			case STRICT_DECIMALS:
 			case NULLS:
+			case SORTING:
 				return false;
 		}
 
