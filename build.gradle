@@ -12,22 +12,23 @@ repositories {
 }
 
 dependencies {
-    compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.26'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: property('vSlf4j')
 
-    compileOnly group: 'org.hibernate', name: 'hibernate-core', version: '5.4.2.Final'
-    compileOnly group: 'org.hibernate', name: 'hibernate-search-engine', version: '5.11.1.Final'
-    compileOnly group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.11.1.Final'
+    compileOnly group: 'javax.persistence', name:'javax.persistence-api', version: property('vJpa')
+    compileOnly group: 'org.hibernate', name: 'hibernate-core', version: property('vHibernate')
+    compileOnly group: 'org.hibernate', name: 'hibernate-search-engine', version: property('vHibernateSearch')
+    compileOnly group: 'org.hibernate', name: 'hibernate-search-orm', version: property('vHibernateSearch')
     compileOnly group: 'org.springframework.data', name: 'spring-data-jpa', version: '2.0.7.RELEASE'
     compileOnly group: 'org.springframework.data', name: 'spring-data-mongodb', version: '2.0.7.RELEASE'
 
-    testCompile group: 'javax.persistence', name:'javax.persistence-api', version: '2.2'
-    testCompile group: 'org.hibernate', name: 'hibernate-core', version: '5.4.2.Final'
-    testCompile group: 'com.h2database', name: 'h2', version: '1.4.199'
-    testCompile group: 'org.hibernate', name: 'hibernate-search-engine', version: '5.11.1.Final'
-    testCompile group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.11.1.Final'
-    testCompile group: 'commons-io', name: 'commons-io', version: '2.5'
+    testCompile group: 'javax.persistence', name:'javax.persistence-api', version: property('vJpa')
+    testCompile group: 'org.hibernate', name: 'hibernate-core', version: property('vHibernate')
+    testCompile group: 'com.h2database', name: 'h2', version: property('vH2')
+    testCompile group: 'org.hibernate', name: 'hibernate-search-engine', version: property('vHibernateSearch')
+    testCompile group: 'org.hibernate', name: 'hibernate-search-orm', version: property('vHibernateSearch')
+    testCompile group: 'commons-io', name: 'commons-io', version: property('vCommonsIo')
 
-    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: '5.3.1'
-    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: '5.3.1'
-    testRuntimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
+    testImplementation group: 'org.junit.jupiter', name: 'junit-jupiter-api', version: property('vJunit')
+    testRuntimeOnly group: 'org.junit.jupiter', name: 'junit-jupiter-engine', version: property('vJunit')
+    testRuntimeOnly group: 'ch.qos.logback', name: 'logback-classic', version: property('vLogback')
 }
