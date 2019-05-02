@@ -19,4 +19,16 @@ public class EntityQueryFilter<ID extends Serializable> extends SingleValueQuery
 		builder.add(field, this);
 	}
 
+	public static <ID extends Serializable> EntityQueryFilter<ID> of(ID value) {
+		return (EntityQueryFilter<ID>) new EntityQueryFilter<>().with(value);
+	}
+
+	public static EntityQueryFilter ofNull() {
+		return (EntityQueryFilter) new EntityQueryFilter().isNull();
+	}
+
+	public static EntityQueryFilter ofNotNull() {
+		return (EntityQueryFilter) new EntityQueryFilter().notNull();
+	}
+
 }

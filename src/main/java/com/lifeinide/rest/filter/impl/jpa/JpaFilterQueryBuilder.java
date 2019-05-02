@@ -6,6 +6,9 @@ import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
+import org.hibernate.query.criteria.internal.compile.CriteriaQueryTypeQueryAdapter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
@@ -22,6 +25,8 @@ import java.util.stream.Collectors;
  */
 public class JpaFilterQueryBuilder<E>
 extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaFilterQueryBuilder<E>> {
+
+	public static final Logger logger = LoggerFactory.getLogger(JpaFilterQueryBuilder.class);
 
 	protected JpaQueryBuilderContext<E> context;
 	protected QueryConjunction conjunction = QueryConjunction.and;
@@ -84,7 +89,8 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(),
 			context.getCb(), context.getRoot().get(field),
 			context.getEntityManager().find(context.getRoot().getModel().getJavaType(), filter.getValue())));
-		return null;
+
+		return this;
 	}
 
 	@Override
@@ -172,6 +178,9 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 		var q = context.getEntityManager().createQuery(context.getQuery());
 		if (req.isPaged())
 			q.setFirstResult(req.getOffset()).setMaxResults(req.getPageSize());
+
+		if (logger.isTraceEnabled())
+			logger.trace("Executing JPA query: {}", ((CriteriaQueryTypeQueryAdapter<E>) q).getQueryString());
 
 		// create and execute main query
 		return buildPageableResult(req.getPageSize(), req.getPage(), count, q.getResultList());

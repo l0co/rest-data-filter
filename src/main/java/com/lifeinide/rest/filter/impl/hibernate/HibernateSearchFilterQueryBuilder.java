@@ -12,6 +12,8 @@ import com.lifeinide.rest.filter.intr.QueryFilter;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.BooleanJunction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.time.LocalDate;
@@ -31,6 +33,8 @@ import static org.hibernate.search.util.StringHelper.isEmpty;
  */
 public class HibernateSearchFilterQueryBuilder<E>
 extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderContext, HibernateSearchFilterQueryBuilder<E>> {
+
+	public static final Logger logger = LoggerFactory.getLogger(HibernateSearchFilterQueryBuilder.class);
 
 	protected HibernateSearchQueryBuilderContext<E> context;
 
@@ -273,6 +277,9 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 			fullTextQuery.setFirstResult(req.getOffset());
 			fullTextQuery.setMaxResults(req.getPageSize());
 		}
+
+		if (logger.isTraceEnabled())
+			logger.trace("Executing lucene query: {}", fullTextQuery.toString());
 
 		return buildPageableResult(req.getPageSize(), req.getPage(), count, fullTextQuery.getResultList());
 	}

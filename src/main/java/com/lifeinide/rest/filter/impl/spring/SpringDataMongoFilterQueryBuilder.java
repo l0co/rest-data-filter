@@ -6,6 +6,8 @@ import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -26,6 +28,8 @@ import java.util.Optional;
  */
 public class SpringDataMongoFilterQueryBuilder<E>
 extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, SpringDataMongoFilterQueryBuilder<E>> {
+
+	public static final Logger logger = LoggerFactory.getLogger(SpringDataMongoFilterQueryBuilder.class);
 
 	protected MongoTemplate mongoTemplate;
 	protected String fullTextQuery;
@@ -144,6 +148,9 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 				.with(springPageable);
 
 		}
+
+		if (logger.isTraceEnabled())
+			logger.trace("Executing mongo query: {}", query.toString());
 
 		if (criteria!=null)
 			query.addCriteria(criteria);
