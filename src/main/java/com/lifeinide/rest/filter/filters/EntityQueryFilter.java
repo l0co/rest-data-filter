@@ -9,6 +9,7 @@ import java.io.Serializable;
  *
  * @author Lukasz Frankowski
  */
+@SuppressWarnings("unchecked")
 public class EntityQueryFilter<ID extends Serializable> extends SingleValueQueryFilter<ID> {
 
 	public EntityQueryFilter() {
