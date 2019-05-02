@@ -5,12 +5,16 @@
 	<persistence-unit name="test-jpa">
 		<class>com.lifeinide.rest.filter.test.hibernate.jpa.JpaAssociatedEntity</class>
 		<class>com.lifeinide.rest.filter.test.hibernate.jpa.JpaEntity</class>
+		<class>com.lifeinide.rest.filter.test.hibernate.search.HibernateSearchEntity</class>
+		<class>com.lifeinide.rest.filter.test.hibernate.search.HibernateSearchAssociatedEntity</class>
 		<exclude-unlisted-classes>true</exclude-unlisted-classes>
 		<properties>
 			<property name="hibernate.dialect" value="org.hibernate.dialect.H2Dialect"/>
 			<property name="hibernate.hbm2ddl.auto" value="update"/>
 			<property name="javax.persistence.jdbc.driver" value="org.h2.Driver"/>
 			<property name="javax.persistence.jdbc.url" value="jdbc:h2:mem:test;DB_CLOSE_DELAY=-1"/>
+			<property name="hibernate.search.default.directory_provider" value="filesystem"/>
+			<property name="hibernate.search.default.indexBase" value="tmp"/>
 		</properties>
 	</persistence-unit>
 </persistence>

@@ -1,7 +1,10 @@
-package com.lifeinide.rest.filter.test.hibernate.jpa;
+package com.lifeinide.rest.filter.test.hibernate.search;
 
+import com.lifeinide.rest.filter.impl.hibernate.HibernateSearch;
 import com.lifeinide.rest.filter.test.EntityEnum;
 import com.lifeinide.rest.filter.test.IEntity;
+import org.apache.lucene.analysis.en.EnglishAnalyzer;
+import org.hibernate.search.annotations.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -11,28 +14,40 @@ import java.time.LocalDate;
  * @author Lukasz Frankowski
  */
 @Entity
-public class JpaEntity implements IEntity<Long, JpaAssociatedEntity> {
+@Indexed
+public class HibernateSearchEntity implements IEntity<Long, HibernateSearchAssociatedEntity> {
 
 	@Id private Long id;
 
+	@Field(name = HibernateSearch.FIELD_TEXT)
+	@Analyzer(impl = EnglishAnalyzer.class)
+	protected String q = HibernateSearchQueryBuilderTest.SEARCHABLE_STRING;
+
+	@Field(analyze = Analyze.NO, norms = Norms.NO)
 	protected String stringVal;
 
+	@Field(analyze = Analyze.NO, norms = Norms.NO)
 	protected Long longVal;
 
+	@Field(analyze = Analyze.NO, norms = Norms.NO)
 	protected BigDecimal decimalVal;
 
+	@Field(analyze = Analyze.NO, norms = Norms.NO)
 	protected LocalDate dateVal;
 
 	@Enumerated(EnumType.STRING)
+	@Field(analyze = Analyze.NO, norms = Norms.NO)
 	protected EntityEnum enumVal;
 
 	@ManyToOne
-	protected JpaAssociatedEntity entityVal;
+	@Field(analyze = Analyze.NO, norms = Norms.NO)
+	@FieldBridge(impl = DomainFieldBridge.class)
+	protected HibernateSearchAssociatedEntity entityVal;
 
-	public JpaEntity() {
+	public HibernateSearchEntity() {
 	}
 
-	public JpaEntity(Long id) {
+	public HibernateSearchEntity(Long id) {
 		this.id = id;
 	}
 
@@ -97,12 +112,12 @@ public class JpaEntity implements IEntity<Long, JpaAssociatedEntity> {
 	}
 
 	@Override
-	public JpaAssociatedEntity getEntityVal() {
+	public HibernateSearchAssociatedEntity getEntityVal() {
 		return entityVal;
 	}
 
 	@Override
-	public void setEntityVal(JpaAssociatedEntity entityVal) {
+	public void setEntityVal(HibernateSearchAssociatedEntity entityVal) {
 		this.entityVal = entityVal;
 	}
 	

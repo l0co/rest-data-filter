@@ -5,7 +5,6 @@ import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
-import com.lifeinide.rest.filter.impl.hibernate.HibernateSearch.FieldAnalyzer;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
 import com.lifeinide.rest.filter.intr.QueryFilter;
@@ -29,6 +28,7 @@ import static org.hibernate.search.util.StringHelper.isEmpty;
  * compileOnly group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.8.2.Final'
  * }</pre>
  *
+ * @see HibernateSearch How to define searchable fields on entities
  * @author Lukasz Frankowski
  */
 public class HibernateSearchFilterQueryBuilder<E>
@@ -47,10 +47,10 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 		boolean fieldFound = false;
 
-		for (FieldAnalyzer fieldAnalyzer: HibernateSearch.ALL_FIELDS) {
+		for (String fieldAnalyzer: HibernateSearch.ALL_FIELDS) {
 
 			try {
-				fullTextQuery.should(queryBuilder.keyword().wildcard().onField(fieldAnalyzer.field)
+				fullTextQuery.should(queryBuilder.keyword().wildcard().onField(fieldAnalyzer)
 					.matching(makeWild(q)).createQuery());
 				fieldFound = true;
 			} catch (SearchException e) {
