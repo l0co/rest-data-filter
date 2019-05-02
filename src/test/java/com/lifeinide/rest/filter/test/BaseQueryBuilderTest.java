@@ -97,11 +97,11 @@ public abstract class BaseQueryBuilderTest<
 	public void testUnpaged() {
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
-			assertEquals(res.getCount(), 100);
-			assertEquals(res.getData().size(), 100);
-			assertEquals(res.getPageSize(), 0);
-			assertEquals(res.getPagesCount(), 0);
-			assertEquals(res.getPage(), 1);
+			assertEquals(100, res.getCount());
+			assertEquals(100, res.getData().size());
+			assertEquals(0, res.getPageSize());
+			assertEquals(0, res.getPagesCount());
+			assertEquals(1, res.getPage());
 		});
 	}
 
