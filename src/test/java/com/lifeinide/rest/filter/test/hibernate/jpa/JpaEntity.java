@@ -3,10 +3,7 @@ package com.lifeinide.rest.filter.test.hibernate.jpa;
 import com.lifeinide.rest.filter.test.EntityEnum;
 import com.lifeinide.rest.filter.test.IEntity;
 
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
@@ -14,7 +11,7 @@ import java.time.LocalDate;
  * @author Lukasz Frankowski
  */
 @Entity
-public class JpaEntity implements IEntity {
+public class JpaEntity implements IEntity<JpaAssociatedEntity> {
 
 	@Id
 	private String id;
@@ -26,6 +23,9 @@ public class JpaEntity implements IEntity {
 	protected BigDecimal decimalVal;
 
 	protected LocalDate dateVal;
+
+	@ManyToOne
+	protected JpaAssociatedEntity entityVal;
 
 	@Enumerated(EnumType.STRING)
 	protected EntityEnum enumVal;
@@ -93,4 +93,14 @@ public class JpaEntity implements IEntity {
 		this.enumVal = enumVal;
 	}
 
+	@Override
+	public JpaAssociatedEntity getEntityVal() {
+		return entityVal;
+	}
+
+	@Override
+	public void setEntityVal(JpaAssociatedEntity entityVal) {
+		this.entityVal = entityVal;
+	}
+	
 }

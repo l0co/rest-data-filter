@@ -18,15 +18,19 @@ import org.junit.jupiter.api.TestInstance.Lifecycle;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.Month;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * @param <PC> Persistence context used by the concrete implementation of this test
+ * @param <A> Associated entity
+ * @param <E> Entity
  * @author Lukasz Frankowski
  */
 @TestInstance(Lifecycle.PER_CLASS)
-public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQueryBuilder<E, ?, F>> {
+public abstract class BaseQueryBuilderTest<PC, A extends IBaseEntity, E extends IEntity<A>, F extends FilterQueryBuilder<E, ?, F>> {
 
 	public static final LocalDate TODAY = LocalDate.of(2018, Month.APRIL, 1);
 
@@ -36,24 +40,35 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 	protected abstract E buildEntity();
 
 	/**
+	 * Builds empty associated entity object
+	 */
+	protected abstract A buildAssociatedEntity();
+
+	/**
 	 * Executes the filter query builder test
 	 */
-	protected abstract void doTest(Consumer<F> c);
+	protected abstract void doTest(BiConsumer<PC, F> c);
 
 	/**
 	 * Should be executed in {@link BeforeAll} method to populate entities to the db
 	 * @param save The consumer executing entity save
 	 */
-	protected void populateData(Consumer<IEntity> save) {
+	protected void populateData(Consumer<IBaseEntity> save) {
+		A associatedEntity = buildAssociatedEntity();
+		associatedEntity.setId("1");
+		save.accept(associatedEntity);
+
 		StringGen sg = new StringGen();
 		for (int i = 1; i <=100; i++) {
-			IEntity entity = buildEntity();
+			IEntity<A> entity = buildEntity();
 			entity.setId(String.valueOf(i));
 			entity.setStringVal(sg.nextStr());
 			entity.setLongVal((long) i);
 			entity.setDecimalVal(new BigDecimal(i));
 			entity.setDateVal(LocalDate.of(2018, Month.JANUARY, 1).plusDays(i-1));
 			entity.setEnumVal(EntityEnum.values()[i % EntityEnum.values().length]);
+			if (i%3==0)
+				entity.setEntityVal(associatedEntity);
 			save.accept(entity);
 		}
 	}
@@ -70,7 +85,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testUnpaged() {
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
 			assertEquals(res.getCount(), 100);
 			assertEquals(res.getData().size(), 100);
@@ -82,7 +97,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testPaged() {
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb.list(BaseRestFilter.ofDefault().withPageSize(20));
 			assertEquals(100, res.getCount());
 			assertEquals(20, res.getData().size());
@@ -105,7 +120,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testStringFilter() {
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.of("aa"))
 				.list(BaseRestFilter.ofUnpaged());
@@ -113,63 +128,63 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 			assertEquals("aa", res.getData().iterator().next().getStringVal());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.of("aa").ne())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(99, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.of("aa").ge())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.of("aa").gt())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(99, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.of("ba").le())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(27, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.of("ba").lt())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(26, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.ofNotNull())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.ofNull())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(0, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", ListQueryFilter.of(SingleValueQueryFilter.of("aa"), SingleValueQueryFilter.of("ab")))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(2, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", ListQueryFilter.of(SingleValueQueryFilter.of("aa"), SingleValueQueryFilter.of("ab")).and())
 				.list(BaseRestFilter.ofUnpaged());
@@ -179,7 +194,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testEnumFilter() {
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("enumVal", SingleValueQueryFilter.of(EntityEnum.A))
 				.list(BaseRestFilter.ofUnpaged());
@@ -188,7 +203,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 				assertEquals(EntityEnum.A, e.getEnumVal());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("enumVal", SingleValueQueryFilter.of(EntityEnum.A).ne())
 				.list(BaseRestFilter.ofUnpaged());
@@ -197,7 +212,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 				assertNotEquals(EntityEnum.A, e.getEnumVal());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("enumVal", ListQueryFilter.of(SingleValueQueryFilter.of(EntityEnum.A), SingleValueQueryFilter.of(EntityEnum.B)))
 				.list(BaseRestFilter.ofUnpaged());
@@ -209,7 +224,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testLongFilter() {
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("longVal", SingleValueQueryFilter.of(1L))
 				.list(BaseRestFilter.ofUnpaged());
@@ -217,35 +232,35 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 			assertEquals(1L, (long) res.iterator().next().getLongVal());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("longVal", SingleValueQueryFilter.of(1L).ge())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("longVal", SingleValueQueryFilter.of(1L).gt())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(99, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("longVal", ValueRangeQueryFilter.ofFrom(10L))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(91, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("longVal", ValueRangeQueryFilter.ofTo(10L))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(10, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("longVal", ValueRangeQueryFilter.of(10L, 20L))
 				.list(BaseRestFilter.ofUnpaged());
@@ -255,7 +270,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testDecimalFilter() {
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")))
 				.list(BaseRestFilter.ofUnpaged());
@@ -263,35 +278,35 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 			assertEquals(new BigDecimal("1.00"), res.iterator().next().getDecimalVal());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")).ge())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")).gt())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(99, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("decimalVal", ValueRangeQueryFilter.ofFrom(new BigDecimal("10.00")))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(91, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("decimalVal", ValueRangeQueryFilter.ofTo(new BigDecimal("10.00")))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(10, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("decimalVal", ValueRangeQueryFilter.of(new BigDecimal("10.00"), new BigDecimal("20.00")))
 				.list(BaseRestFilter.ofUnpaged());
@@ -301,7 +316,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testDateFilter() {
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofCurrentMonth())
 				.list(BaseRestFilter.ofUnpaged());
@@ -310,7 +325,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 				assertEquals(Month.APRIL, e.getDateVal().getMonth());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofPreviousMonth())
 				.list(BaseRestFilter.ofUnpaged());
@@ -319,35 +334,35 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 				assertEquals(Month.MARCH, e.getDateVal().getMonth());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofCurrentYear())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofPreviousYear())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(0, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofLast30Days())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(31, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.ofLast90Days())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(91, res.getCount());
 		});
 
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("dateVal", DateRangeQueryFilter.of(LocalDate.of(2018, Month.FEBRUARY, 1), LocalDate.of(2018, Month.FEBRUARY, 10)))
 				.list(BaseRestFilter.ofUnpaged());
@@ -358,7 +373,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 	@Test
 	public void testListFilter() {
 		// and condition
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(10L).ge(), SingleValueQueryFilter.of(20L).le()).and())
 				.list(BaseRestFilter.ofUnpaged());
@@ -368,7 +383,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 		});
 
 		// or condition
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(10L).lt(), SingleValueQueryFilter.of(20L).gt()))
 				.list(BaseRestFilter.ofUnpaged());
@@ -380,7 +395,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 
 	@Test
 	public void testMultipleFilters() {
-		doTest(qb -> {
+		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
 				.add("stringVal", SingleValueQueryFilter.of("ba").ge())
 				.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(36L).le(), SingleValueQueryFilter.of(50L).ge()))

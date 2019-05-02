@@ -2,6 +2,7 @@ package com.lifeinide.rest.filter.test.hibernate;
 
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.test.BaseQueryBuilderTest;
+import com.lifeinide.rest.filter.test.IBaseEntity;
 import com.lifeinide.rest.filter.test.IEntity;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,7 +15,8 @@ import java.util.function.Consumer;
 /**
  * @author Lukasz Frankowski
  */
-public abstract class BaseHibernateJpaTest<E extends IEntity, F extends FilterQueryBuilder<E, ?, F>> extends BaseQueryBuilderTest<E, F> {
+public abstract class BaseHibernateJpaTest<A extends IBaseEntity, E extends IEntity<A>, F extends FilterQueryBuilder<E, ?, F>>
+extends BaseQueryBuilderTest<EntityManager, A, E, F> {
 
 	public static final String PERSISTENCE_UNIT_NAME = "test-jpa";
 

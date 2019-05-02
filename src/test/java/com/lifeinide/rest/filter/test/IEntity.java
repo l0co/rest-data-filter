@@ -4,13 +4,10 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 /**
+ * @param <A> Associated entity type.
  * @author Lukasz Frankowski
  */
-public interface IEntity {
-
-	String getId();
-
-	void setId(String id);
+public interface IEntity<A extends IBaseEntity> extends IBaseEntity {
 
 	String getStringVal();
 
@@ -31,5 +28,9 @@ public interface IEntity {
 	EntityEnum getEnumVal();
 
 	void setEnumVal(EntityEnum enumVal);
+
+	A getEntityVal();
+
+	void setEntityVal(A entityVal);
 	
 }
