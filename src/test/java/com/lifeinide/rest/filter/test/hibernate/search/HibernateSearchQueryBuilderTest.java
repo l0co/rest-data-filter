@@ -40,6 +40,7 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<Long, 
 	protected boolean supports(QueryBuilderTestFeature feature) {
 		switch (feature) {
 			case STRICT_INEQUALITIES:
+			case STRICT_DECIMALS:
 			case NULLS:
 				return false;
 		}

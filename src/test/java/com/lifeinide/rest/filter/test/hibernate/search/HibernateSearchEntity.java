@@ -1,6 +1,7 @@
 package com.lifeinide.rest.filter.test.hibernate.search;
 
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearch;
+import com.lifeinide.rest.filter.impl.hibernate.RangeNumberBridge;
 import com.lifeinide.rest.filter.test.EntityEnum;
 import com.lifeinide.rest.filter.test.IEntity;
 import org.apache.lucene.analysis.en.EnglishAnalyzer;
@@ -27,12 +28,14 @@ public class HibernateSearchEntity implements IEntity<Long, HibernateSearchAssoc
 	protected String stringVal;
 
 	@Field(analyze = Analyze.NO, norms = Norms.NO)
+	@FieldBridge(impl = RangeNumberBridge.class)
 	protected Long longVal;
 
 	@Field(analyze = Analyze.NO, norms = Norms.NO)
+	@FieldBridge(impl = RangeNumberBridge.class)
 	protected BigDecimal decimalVal;
 
-	@Field(analyze = Analyze.NO, norms = Norms.NO)
+	@Field(analyze = Analyze.NO, norms = Norms.NO) // TODOLF remove store
 	protected LocalDate dateVal;
 
 	@Enumerated(EnumType.STRING)

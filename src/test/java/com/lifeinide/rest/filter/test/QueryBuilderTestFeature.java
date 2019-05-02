@@ -2,6 +2,8 @@ package com.lifeinide.rest.filter.test;
 
 import com.lifeinide.rest.filter.enums.QueryCondition;
 
+import java.math.BigDecimal;
+
 /**
  * @author Lukasz Frankowski
  */
@@ -16,6 +18,11 @@ public enum QueryBuilderTestFeature {
 	/**
 	 * Whether isNull / notNull queries are supported. Unsupported for example for Lucene queries.
 	 */
-	NULLS
+	NULLS,
+
+	/**
+	 * Whether the storage stores {@link BigDecimal} in strict mode, e.g. 1.00 = 1.00. Lucene rounds it by default and 1.00 = 1.
+	 */
+	STRICT_DECIMALS,
 
 }

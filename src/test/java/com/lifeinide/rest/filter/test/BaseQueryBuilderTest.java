@@ -91,6 +91,24 @@ public abstract class BaseQueryBuilderTest<
 		return true;
 	}
 
+	@SuppressWarnings("BigDecimalMethodWithoutRoundingCalled")
+	protected BigDecimal decimal(String s) {
+		BigDecimal decimal = new BigDecimal(s);
+		if (supports(QueryBuilderTestFeature.STRICT_INEQUALITIES))
+			return decimal;
+
+		// remove unncessary zeros
+		while (decimal.scale()>0) {
+			try {
+				decimal = decimal.setScale(decimal.scale()-1);
+			} catch (ArithmeticException e) {
+				break;
+			}
+		}
+
+		return decimal;
+	}
+
 	@BeforeAll
 	public void setToday() {
 		DateRange.setToday(() -> TODAY);
@@ -295,7 +313,7 @@ public abstract class BaseQueryBuilderTest<
 	public void testDecimalFilter() {
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
-				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")))
+				.add("decimalVal", SingleValueQueryFilter.of(decimal("1.00")))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(1, res.getCount());
 			assertEquals(new BigDecimal("1.00"), res.iterator().next().getDecimalVal());
@@ -303,35 +321,36 @@ public abstract class BaseQueryBuilderTest<
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
-				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")).ge())
+				.add("decimalVal", SingleValueQueryFilter.of(decimal("1.00")).ge())
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 		});
 
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("decimalVal", SingleValueQueryFilter.of(new BigDecimal("1.00")).gt())
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(99, res.getCount());
-		});
+		if (supports(QueryBuilderTestFeature.STRICT_INEQUALITIES))
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("decimalVal", SingleValueQueryFilter.of(decimal("1.00")).gt())
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(99, res.getCount());
+			});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
-				.add("decimalVal", ValueRangeQueryFilter.ofFrom(new BigDecimal("10.00")))
+				.add("decimalVal", ValueRangeQueryFilter.ofFrom(decimal("10.00")))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(91, res.getCount());
 		});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
-				.add("decimalVal", ValueRangeQueryFilter.ofTo(new BigDecimal("10.00")))
+				.add("decimalVal", ValueRangeQueryFilter.ofTo(decimal("10.00")))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(10, res.getCount());
 		});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
-				.add("decimalVal", ValueRangeQueryFilter.of(new BigDecimal("10.00"), new BigDecimal("20.00")))
+				.add("decimalVal", ValueRangeQueryFilter.of(decimal("10.00"), decimal("20.00")))
 				.list(BaseRestFilter.ofUnpaged());
 			assertEquals(11, res.getCount());
 		});
