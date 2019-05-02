@@ -8,9 +8,9 @@ import java.time.LocalDate;
  */
 public interface IEntity {
 
-	Long getId();
+	String getId();
 
-	void setId(Long id);
+	void setId(String id);
 
 	String getStringVal();
 

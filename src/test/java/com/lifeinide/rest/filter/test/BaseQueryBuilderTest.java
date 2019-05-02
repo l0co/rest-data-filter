@@ -48,7 +48,7 @@ public abstract class BaseQueryBuilderTest<E extends IEntity, F extends FilterQu
 		StringGen sg = new StringGen();
 		for (int i = 1; i <=100; i++) {
 			IEntity entity = buildEntity();
-			entity.setId((long) i);
+			entity.setId(String.valueOf(i));
 			entity.setStringVal(sg.nextStr());
 			entity.setLongVal((long) i);
 			entity.setDecimalVal(new BigDecimal(i));

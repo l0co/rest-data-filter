@@ -17,7 +17,7 @@ import java.time.LocalDate;
 public class JpaEntity implements IEntity {
 
 	@Id
-	private Long id;
+	private String id;
 
 	protected String stringVal;
 
@@ -34,12 +34,12 @@ public class JpaEntity implements IEntity {
 	}
 
 	@Override
-	public Long getId() {
+	public String getId() {
 		return id;
 	}
 
 	@Override
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 
