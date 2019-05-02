@@ -1,11 +1,11 @@
 package com.lifeinide.rest.filter.impl.jpa;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
-import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
+import com.lifeinide.rest.filter.intr.PageableSortable;
 import org.hibernate.query.criteria.internal.compile.CriteriaQueryTypeQueryAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,7 +159,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(BaseRestFilter req) {
+	public PageableResult<E> list(PageableSortable req) {
 		// apply predicates
 		buildPredicate().ifPresent(predicate -> {
 			context.getQuery().where(predicate);

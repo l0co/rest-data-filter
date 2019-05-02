@@ -1,8 +1,7 @@
 package com.lifeinide.rest.filter.dto;
 
-import com.lifeinide.rest.filter.intr.Pageable;
+import com.lifeinide.rest.filter.intr.PageableSortable;
 import com.lifeinide.rest.filter.intr.SortField;
-import com.lifeinide.rest.filter.intr.Sortable;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -13,7 +12,7 @@ import java.util.List;
  *
  * @author Lukasz Frankowski
  */
-public class BaseRestFilter implements Serializable, Sortable, Pageable {
+public class BaseRestFilter implements Serializable, PageableSortable {
 
 	protected int pageSize = 20;
 

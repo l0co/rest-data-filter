@@ -1,6 +1,5 @@
 package com.lifeinide.rest.filter.intr;
 
-import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.filters.*;
 
 /**
@@ -29,6 +28,6 @@ public interface FilterQueryBuilder<E, Q, SELF extends FilterQueryBuilder<E, Q, 
 	 */
 	Q build();
 
-	PageableResult<E> list(BaseRestFilter req);
+	PageableResult<E> list(PageableSortable req);
 
 }

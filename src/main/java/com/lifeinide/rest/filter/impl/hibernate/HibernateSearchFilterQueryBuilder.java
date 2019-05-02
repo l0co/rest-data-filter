@@ -1,12 +1,12 @@
 package com.lifeinide.rest.filter.impl.hibernate;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
-import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
+import com.lifeinide.rest.filter.intr.PageableSortable;
 import com.lifeinide.rest.filter.intr.QueryFilter;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.jpa.FullTextQuery;
@@ -297,7 +297,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(BaseRestFilter req) {
+	public PageableResult<E> list(PageableSortable req) {
 		FullTextQuery fullTextQuery = build();
 
 		if (logger.isTraceEnabled())
