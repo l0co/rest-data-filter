@@ -12,6 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.*;
+import javax.persistence.metamodel.EntityType;
+import javax.persistence.metamodel.SingularAttribute;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -86,9 +88,14 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 
 	@Override
 	public JpaFilterQueryBuilder<E> add(String field, EntityQueryFilter filter) {
-		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(),
-			context.getCb(), context.getRoot().get(field),
-			context.getEntityManager().find(context.getRoot().getModel().getJavaType(), filter.getValue())));
+		// discover id field name of the associated entity
+		Class<?> associatedEntityJavaType = context.getRoot().get(field).getJavaType();
+		EntityType<?> associatedEntityType = context.getEntityManager().getEntityManagerFactory().getMetamodel().entity(associatedEntityJavaType);
+		Class<?> idJavaType = associatedEntityType.getIdType().getJavaType();
+		SingularAttribute<?, ?> id = associatedEntityType.getId(idJavaType);
+
+		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(), context.getCb(),
+			context.getRoot().get(field).get(id.getName()), filter.getValue()));
 
 		return this;
 	}
@@ -162,7 +169,10 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 		Selection<E> selection = context.getQuery().getSelection();
 		CriteriaQuery countQuery = context.getQuery();
 		countQuery.select(context.getCb().count(context.getRoot()));
-		Long count = (Long) context.getEntityManager().createQuery(countQuery).getSingleResult();
+		var cq = context.getEntityManager().createQuery(countQuery);
+		if (logger.isTraceEnabled())
+			logger.trace("Executing JPA query: {}", ((CriteriaQueryTypeQueryAdapter) cq).getQueryString());
+		Long count = (Long) cq.getSingleResult();
 		context.getQuery().select(selection); // restore selection afterwards
 
 		// apply orders
@@ -178,7 +188,6 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 		var q = context.getEntityManager().createQuery(context.getQuery());
 		if (req.isPaged())
 			q.setFirstResult(req.getOffset()).setMaxResults(req.getPageSize());
-
 		if (logger.isTraceEnabled())
 			logger.trace("Executing JPA query: {}", ((CriteriaQueryTypeQueryAdapter<E>) q).getQueryString());
 

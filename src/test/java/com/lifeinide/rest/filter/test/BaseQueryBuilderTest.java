@@ -3,10 +3,7 @@ package com.lifeinide.rest.filter.test;
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.dto.Sort;
 import com.lifeinide.rest.filter.enums.DateRange;
-import com.lifeinide.rest.filter.filters.DateRangeQueryFilter;
-import com.lifeinide.rest.filter.filters.ListQueryFilter;
-import com.lifeinide.rest.filter.filters.SingleValueQueryFilter;
-import com.lifeinide.rest.filter.filters.ValueRangeQueryFilter;
+import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
 import org.junit.jupiter.api.AfterAll;
@@ -435,9 +432,29 @@ public abstract class BaseQueryBuilderTest<
 	public void testEntityFilters() {
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
-//				.add("entityVal", EntityQueryFilter.of(associatedEntityId))
+				.add("entityVal", EntityQueryFilter.of(associatedEntityId))
 				.list(BaseRestFilter.ofUnpaged());
-			res = null;
+			assertEquals(33, res.getCount());
+			for (E e: res)
+				assertEquals(associatedEntityId, e.getEntityVal().getId());
+		});
+
+		doTest((pc, qb) -> {
+			PageableResult<E> res = qb
+				.add("entityVal", EntityQueryFilter.ofNotNull())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(33, res.getCount());
+			for (E e: res)
+				assertEquals(associatedEntityId, e.getEntityVal().getId());
+		});
+
+		doTest((pc, qb) -> {
+			PageableResult<E> res = qb
+				.add("entityVal", EntityQueryFilter.ofNull())
+				.list(BaseRestFilter.ofUnpaged());
+			assertEquals(67, res.getCount());
+			for (E e: res)
+				assertNull(e.getEntityVal());
 		});
 	}
 

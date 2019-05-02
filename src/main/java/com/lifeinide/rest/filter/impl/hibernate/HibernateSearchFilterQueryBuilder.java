@@ -271,15 +271,15 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 	public PageableResult<E> list(BaseRestFilter req) {
 		FullTextQuery fullTextQuery = build();
 
+		if (logger.isTraceEnabled())
+			logger.trace("Executing lucene query: {}", fullTextQuery.toString());
+
 		long count = fullTextQuery.getResultSize();
 
 		if (req.isPaged()) {
 			fullTextQuery.setFirstResult(req.getOffset());
 			fullTextQuery.setMaxResults(req.getPageSize());
 		}
-
-		if (logger.isTraceEnabled())
-			logger.trace("Executing lucene query: {}", fullTextQuery.toString());
 
 		return buildPageableResult(req.getPageSize(), req.getPage(), count, fullTextQuery.getResultList());
 	}
