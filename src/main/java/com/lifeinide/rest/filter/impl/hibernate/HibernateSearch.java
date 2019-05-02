@@ -5,7 +5,6 @@ import org.hibernate.search.jpa.FullTextEntityManager;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.jpa.Search;
 import org.hibernate.search.query.dsl.QueryBuilder;
-import org.hibernate.search.query.engine.spi.QueryDescriptor;
 
 import javax.persistence.EntityManager;
 
@@ -14,7 +13,6 @@ import javax.persistence.EntityManager;
  *
  * TODOLF docs about searchable fields
  * TODOLF docs about entity bridge
- * TODOLF add elastic search query building option
  *
  * @author Lukasz Frankowski
  */
@@ -48,8 +46,6 @@ public class HibernateSearch {
 	 **/
 	public static final String FIELD_ID = "textid";
 
-	public static final String[] ALL_FIELDS = new String[] {FIELD_TEXT, FIELD_ID};
-
 	protected EntityManager entityManager;
 
 	public HibernateSearch(EntityManager entityManager) {
@@ -66,14 +62,6 @@ public class HibernateSearch {
 
 	public FullTextQuery buildQuery(Query query, Class entityClass) {
 		return fullTextEntityManager().createFullTextQuery(query, entityClass);
-	}
-
-	public String buildStandardQueryString(String q) {
-		return String.format("%s:%s %s:%s", FIELD_TEXT, q, FIELD_ID, q);
-	}
-
-	public FullTextQuery buildQuery(QueryDescriptor descriptor, Class entityClass) {
-		return fullTextEntityManager().createFullTextQuery(descriptor, entityClass);
 	}
 
 }

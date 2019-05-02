@@ -47,16 +47,33 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 		boolean fieldFound = false;
 
-		for (String fieldAnalyzer: HibernateSearch.ALL_FIELDS) {
+		// FIELD_TEXT phrase search
 
-			try {
-				fullTextQuery.should(queryBuilder.keyword().wildcard().onField(fieldAnalyzer)
-					.matching(makeWild(q)).createQuery());
-				fieldFound = true;
-			} catch (SearchException e) {
-				// silently, this means that some of our full text fields don't exists in the entity
-			}
+		try {
+			fullTextQuery.should(
+				queryBuilder
+					.phrase()
+					.onField(HibernateSearch.FIELD_TEXT)
+					.sentence(q).createQuery())
+				.createQuery();
+			fieldFound = true;
+		} catch (Exception e) {
+			// silently, this means that some of our full text fields don't exists in the entity
+		}
 
+		// FIELD_ID wildcard search
+
+		try {
+			fullTextQuery.should(
+				queryBuilder
+					.keyword()
+					.wildcard()
+					.onField(HibernateSearch.FIELD_ID)
+					.matching(makeWild(q))
+					.createQuery());
+			fieldFound = true;
+		} catch (Exception e) {
+			// silently, this means that some of our full text fields don't exists in the entity
 		}
 
 		if (!fieldFound)
