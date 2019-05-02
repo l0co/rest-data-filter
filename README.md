@@ -169,9 +169,9 @@ This lib provides following query builders implementation, ready to be used with
 | Class | Description | Status |
 |------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|-------------------|
 | [JpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/jpa/JpaFilterQueryBuilder.java) | Provides query builder for JPA criteria API. | Production ready. |
-| [HibernateSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateSearchFilterQueryBuilder.java) | Provides query builder for Hibernate Search. | Untested. |
-| [SpringDataJpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataJpaFilterQueryBuilder.java) | Provides query builder for Spring Data JPA. | Untested. |
-| [SpringDataMongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataMongoFilterQueryBuilder.java) | Provides query builder for Spring Data MongoDB. | Untested. |
+| [HibernateSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateSearchFilterQueryBuilder.java) | Provides query builder for Hibernate Search. | Production ready. |
+| [SpringDataJpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataJpaFilterQueryBuilder.java) | Provides query builder for Spring Data JPA. | Not fully tested yet. |
+| [SpringDataMongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataMongoFilterQueryBuilder.java) | Provides query builder for Spring Data MongoDB. | Not fully tested yet. |
 
 Note, that the underlying dependencies are not included by default by this lib and to enable given persistence storage support you need to add dependencies described in the specific query builder class header to your project.
 
@@ -192,3 +192,7 @@ public SELF add(String field, QueryFilter filter) {
 So, you can just extend `FilterQueryBuilder` implementation and implement this method with your custom filters support. 
 
 In case you want to delegate custom query builder execution to some external class, you can always pass to it `FilterQueryBuilder` instance which implements `context()` method that can be used to join to current query building process.
+
+## Project supporters
+
+Thanks for supporting this project to [Two Fish Software](https://twofishsoftware.com/).
