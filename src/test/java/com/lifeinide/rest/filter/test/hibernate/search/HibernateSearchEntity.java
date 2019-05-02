@@ -61,6 +61,14 @@ public class HibernateSearchEntity implements IEntity<Long, HibernateSearchAssoc
 		this.id = id;
 	}
 
+	public String getQ() {
+		return q;
+	}
+
+	public void setQ(String q) {
+		this.q = q;
+	}
+
 	@Override
 	public String getStringVal() {
 		return stringVal;

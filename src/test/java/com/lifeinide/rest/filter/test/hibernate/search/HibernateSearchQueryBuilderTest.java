@@ -25,8 +25,14 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<Long, 
 	}
 
 	@AfterAll
-	public void deleteIndex() throws IOException {
-		FileUtils.deleteDirectory(Path.of("tmp").toFile());
+	@Override
+	public void done() {
+		super.done();
+		try {
+			FileUtils.deleteDirectory(Path.of("tmp").toFile());
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	@Override
