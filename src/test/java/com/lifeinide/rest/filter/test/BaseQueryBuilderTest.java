@@ -3,6 +3,7 @@ package com.lifeinide.rest.filter.test;
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.dto.Sort;
 import com.lifeinide.rest.filter.enums.DateRange;
+import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
@@ -83,6 +84,14 @@ public abstract class BaseQueryBuilderTest<
 		}
 	}
 
+	/**
+	 * Whether supports {@code >} and {@code <} inequalites, i.e. {@link QueryCondition#ge} and {@link QueryCondition#le}. For example
+	 * lucene queries don't support them. They support only non-strict equalites {@code >=} and {@code <=}.
+	 */
+	protected boolean supportsStrictInequalities() {
+		return true;
+	}
+
 	@BeforeAll
 	public void setToday() {
 		DateRange.setToday(() -> TODAY);
@@ -152,12 +161,13 @@ public abstract class BaseQueryBuilderTest<
 			assertEquals(100, res.getCount());
 		});
 
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("stringVal", SingleValueQueryFilter.of("aa").gt())
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(99, res.getCount());
-		});
+		if (supportsStrictInequalities())
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("stringVal", SingleValueQueryFilter.of("aa").gt())
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(99, res.getCount());
+			});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
@@ -166,12 +176,13 @@ public abstract class BaseQueryBuilderTest<
 			assertEquals(27, res.getCount());
 		});
 
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("stringVal", SingleValueQueryFilter.of("ba").lt())
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(26, res.getCount());
-		});
+		if (supportsStrictInequalities())
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("stringVal", SingleValueQueryFilter.of("ba").lt())
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(26, res.getCount());
+			});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
@@ -249,12 +260,13 @@ public abstract class BaseQueryBuilderTest<
 			assertEquals(100, res.getCount());
 		});
 
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("longVal", SingleValueQueryFilter.of(1L).gt())
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(99, res.getCount());
-		});
+		if (supportsStrictInequalities())
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("longVal", SingleValueQueryFilter.of(1L).gt())
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(99, res.getCount());
+			});
 
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
@@ -393,14 +405,15 @@ public abstract class BaseQueryBuilderTest<
 		});
 
 		// or condition
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(10L).lt(), SingleValueQueryFilter.of(20L).gt()))
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(89, res.getCount());
-			for (E e: res)
-				assertTrue(e.getLongVal() < 10 || e.getLongVal() > 20);
-		});
+		if (supportsStrictInequalities())
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("longVal", ListQueryFilter.of(SingleValueQueryFilter.of(10L).lt(), SingleValueQueryFilter.of(20L).gt()))
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(89, res.getCount());
+				for (E e: res)
+					assertTrue(e.getLongVal() < 10 || e.getLongVal() > 20);
+			});
 	}
 
 	@Test

@@ -36,6 +36,11 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<Long, 
 	}
 
 	@Override
+	protected boolean supportsStrictInequalities() {
+		return false;
+	}
+
+	@Override
 	protected HibernateSearchEntity buildEntity(Long previousId) {
 		return new HibernateSearchEntity(previousId==null ? 1L : previousId+1);
 	}

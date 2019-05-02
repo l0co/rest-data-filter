@@ -126,7 +126,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 			LocalDate to = filter.calculateTo();
 
 			try {
-				Field reflectField = context.getEntityClass().getField(field);
+				Field reflectField = context.getEntityClass().getDeclaredField(field);
 				Comparable fromObject = (Comparable) filter.convert(from, reflectField);
 				Comparable toObject = (Comparable) filter.convert(to, reflectField);
 
@@ -163,6 +163,10 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 					if (QueryConjunction.or.equals(filter.getConjunction()) && filters.size()>1) {
 						if (QueryCondition.eq.equals(qf.getCondition()))
 							should(localJunction, field, qf.getValue(), true);
+						else if (QueryCondition.ge.equals(qf.getCondition()))
+							localJunction.should(context.getQueryBuilder().range().onField(field).above(qf.getValue()).createQuery());
+						else if (QueryCondition.le.equals(qf.getCondition()))
+							localJunction.should(context.getQueryBuilder().range().onField(field).below(qf.getValue()).createQuery());
 						else
 							throw new UnsupportedOperationException(String.format(
 								"Condition: %s is not supported with ListQueryFilter using or conjunction", qf.getCondition()));
@@ -171,6 +175,10 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 							must(localJunction, field, qf.getValue(), true);
 						else if (QueryCondition.ne.equals(qf.getCondition()))
 							mustNot(localJunction, field, qf.getValue(), true);
+						else if (QueryCondition.ge.equals(qf.getCondition()))
+							localJunction.must(context.getQueryBuilder().range().onField(field).above(qf.getValue()).createQuery());
+						else if (QueryCondition.le.equals(qf.getCondition()))
+							localJunction.must(context.getQueryBuilder().range().onField(field).below(qf.getValue()).createQuery());
 						else
 							throw new UnsupportedOperationException(String.format(
 								"Condition: %s is not supported with ListQueryFilter", qf.getCondition()));
@@ -193,9 +201,13 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 				must(context.getBooleanJunction(), field, filter.getValue(), true);
 			else if (QueryCondition.ne.equals(filter.getCondition()))
 				mustNot(context.getBooleanJunction(), field, filter.getValue(), true);
+			else if (QueryCondition.ge.equals(filter.getCondition()))
+				context.getBooleanJunction().must(context.getQueryBuilder().range().onField(field).above(filter.getValue()).createQuery());
+			else if (QueryCondition.le.equals(filter.getCondition()))
+				context.getBooleanJunction().must(context.getQueryBuilder().range().onField(field).below(filter.getValue()).createQuery());
 			else
 				throw new IllegalArgumentException(
-					String.format("Condition: %s not supported for EntityQueryFilter", filter.getCondition()));
+					String.format("Condition: %s not supported for HibernateSearchFilterQueryBuilder", filter.getCondition()));
 		}
 
 		return this;
