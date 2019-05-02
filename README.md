@@ -4,6 +4,8 @@ A collection of DTO frames that can be used to create data filters through REST/
 
 The goal of this library is to provide uniform queries to REST/GraphQL with pagination and sorting support regardless the underlying data source .
 
+This library can be installed from Github Releases using [jitpack.io](https://jitpack.io/#l0co/rest-data-filter).
+
 ## Default filters provided
 
 Following default filter frames are provided by this lib.
@@ -173,7 +175,7 @@ This lib provides following query builders implementation, ready to be used with
 | [SpringDataJpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataJpaFilterQueryBuilder.java) | Provides query builder for Spring Data JPA. | Not fully tested yet. |
 | [SpringDataMongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataMongoFilterQueryBuilder.java) | Provides query builder for Spring Data MongoDB. | Not fully tested yet. |
 
-Note, that the underlying dependencies are not included by default by this lib and to enable given persistence storage support you need to add dependencies described in the specific query builder class header to your project.
+Note, that the underlying **dependencies are not included by default by this lib** and to enable given persistence storage support you need to add dependencies described in the specific query builder class header to your project.
 
 ## How to implement custom filter
 
