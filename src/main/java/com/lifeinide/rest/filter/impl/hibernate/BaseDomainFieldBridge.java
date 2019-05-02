@@ -41,11 +41,11 @@ public abstract class BaseDomainFieldBridge<E> implements FieldBridge, StringBri
 
 	@Override
 	public String objectToString(Object object) {
-		if (object instanceof String) // allow to use string ID in queries
-			return (String) object;
 		if (isEntity(object))
 			return getEntityIdAsString((E) object);
-		return NULL_ID;
+		if (object == null)
+			return NULL_ID;
+		return object.toString();
 	}
 
 }

@@ -144,7 +144,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 	@Override
 	public HibernateSearchFilterQueryBuilder<E> add(String field, EntityQueryFilter filter) {
-		return add(field, (QueryFilter) filter);
+		return add(field, (SingleValueQueryFilter) filter);
 	}
 
 	@SuppressWarnings("unchecked")

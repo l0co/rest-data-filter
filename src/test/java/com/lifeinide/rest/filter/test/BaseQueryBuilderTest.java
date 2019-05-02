@@ -472,23 +472,25 @@ public abstract class BaseQueryBuilderTest<
 				assertEquals(associatedEntityId, e.getEntityVal().getId());
 		});
 
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("entityVal", EntityQueryFilter.ofNotNull())
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(33, res.getCount());
-			for (E e: res)
-				assertEquals(associatedEntityId, e.getEntityVal().getId());
-		});
+		if (supports(QueryBuilderTestFeature.NULLS))
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("entityVal", EntityQueryFilter.ofNotNull())
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(33, res.getCount());
+				for (E e: res)
+					assertEquals(associatedEntityId, e.getEntityVal().getId());
+			});
 
-		doTest((pc, qb) -> {
-			PageableResult<E> res = qb
-				.add("entityVal", EntityQueryFilter.ofNull())
-				.list(BaseRestFilter.ofUnpaged());
-			assertEquals(67, res.getCount());
-			for (E e: res)
-				assertNull(e.getEntityVal());
-		});
+		if (supports(QueryBuilderTestFeature.NULLS))
+			doTest((pc, qb) -> {
+				PageableResult<E> res = qb
+					.add("entityVal", EntityQueryFilter.ofNull())
+					.list(BaseRestFilter.ofUnpaged());
+				assertEquals(67, res.getCount());
+				for (E e: res)
+					assertNull(e.getEntityVal());
+			});
 	}
 
 }
