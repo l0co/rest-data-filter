@@ -28,6 +28,22 @@ public interface FilterQueryBuilder<E, Q, SELF extends FilterQueryBuilder<E, Q, 
 	 */
 	Q build();
 
-	PageableResult<E> list(PageableSortable req);
+	PageableResult<E> list(Pageable pageable, Sortable sortable);
+
+	default PageableResult<E> list() {
+		return list(null, null);
+	}
+	
+	default PageableResult<E> list(Pageable pageable) {
+		return list(pageable, null);
+	}
+
+	default PageableResult<E> list(Sortable sortable) {
+		return list(null, sortable);
+	}
+
+	default PageableResult<E> list(PageableSortable ps) {
+		return list(ps, ps);
+	}
 
 }

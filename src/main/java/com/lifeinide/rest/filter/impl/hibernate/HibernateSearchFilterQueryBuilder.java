@@ -4,10 +4,7 @@ import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
 import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
-import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
-import com.lifeinide.rest.filter.intr.PageableResult;
-import com.lifeinide.rest.filter.intr.PageableSortable;
-import com.lifeinide.rest.filter.intr.QueryFilter;
+import com.lifeinide.rest.filter.intr.*;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.BooleanJunction;
@@ -297,7 +294,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(PageableSortable req) {
+	public PageableResult<E> list(Pageable pageable, Sortable sortable) {
 		FullTextQuery fullTextQuery = build();
 
 		if (logger.isTraceEnabled())
@@ -305,12 +302,12 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 		long count = fullTextQuery.getResultSize();
 
-		if (req.isPaged()) {
-			fullTextQuery.setFirstResult(req.getOffset());
-			fullTextQuery.setMaxResults(req.getPageSize());
+		if (pageable.isPaged()) {
+			fullTextQuery.setFirstResult(pageable.getOffset());
+			fullTextQuery.setMaxResults(pageable.getPageSize());
 		}
 
-		return buildPageableResult(req.getPageSize(), req.getPage(), count, fullTextQuery.getResultList());
+		return buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, fullTextQuery.getResultList());
 	}
 	
 }

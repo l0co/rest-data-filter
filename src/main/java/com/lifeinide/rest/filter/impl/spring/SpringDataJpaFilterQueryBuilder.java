@@ -4,8 +4,9 @@ import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
+import com.lifeinide.rest.filter.intr.Pageable;
 import com.lifeinide.rest.filter.intr.PageableResult;
-import com.lifeinide.rest.filter.intr.PageableSortable;
+import com.lifeinide.rest.filter.intr.Sortable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.repository.support.Repositories;
@@ -136,9 +137,9 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 	}
 
 	@Override
-	public PageableResult<E> list(PageableSortable req) {
+	public PageableResult<E> list(Pageable pageable, Sortable sortable) {
 		return SpringPageableConverter.springPageToApplication(this, 
-			findExecutor().findAll(build(), SpringPageableConverter.applicationPageableToSpring(req)));
+			findExecutor().findAll(build(), SpringPageableConverter.applicationPageableToSpring(pageable, sortable)));
 	}
 
 	@Override

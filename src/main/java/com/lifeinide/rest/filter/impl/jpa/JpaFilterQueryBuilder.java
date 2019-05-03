@@ -1,11 +1,13 @@
 package com.lifeinide.rest.filter.impl.jpa;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
+import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
+import com.lifeinide.rest.filter.intr.Pageable;
 import com.lifeinide.rest.filter.intr.PageableResult;
-import com.lifeinide.rest.filter.intr.PageableSortable;
+import com.lifeinide.rest.filter.intr.Sortable;
 import org.hibernate.query.criteria.internal.compile.CriteriaQueryTypeQueryAdapter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -159,7 +161,12 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(PageableSortable req) {
+	public PageableResult<E> list(Pageable pageable, Sortable sortable) {
+		if (pageable==null)
+			pageable = BaseRestFilter.ofUnpaged();
+		if (sortable==null)
+			sortable = BaseRestFilter.ofUnpaged();
+
 		// apply predicates
 		buildPredicate().ifPresent(predicate -> {
 			context.getQuery().where(predicate);
@@ -176,7 +183,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 		context.getQuery().select(selection); // restore selection afterwards
 
 		// apply orders
-		var orders = req.getSort().stream()
+		var orders = sortable.getSort().stream()
 			.map(sort -> sort.isAsc()
 				? context.getCb().asc(context.getRoot().get(sort.getSortField()))
 				: context.getCb().desc(context.getRoot().get(sort.getSortField())))
@@ -186,13 +193,13 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 
 		// apply pagination
 		var q = context.getEntityManager().createQuery(context.getQuery());
-		if (req.isPaged())
-			q.setFirstResult(req.getOffset()).setMaxResults(req.getPageSize());
+		if (pageable.isPaged())
+			q.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
 		if (logger.isTraceEnabled())
 			logger.trace("Executing JPA query: {}", ((CriteriaQueryTypeQueryAdapter<E>) q).getQueryString());
 
 		// create and execute main query
-		return buildPageableResult(req.getPageSize(), req.getPage(), count, q.getResultList());
+		return buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, q.getResultList());
 	}
 	
 }

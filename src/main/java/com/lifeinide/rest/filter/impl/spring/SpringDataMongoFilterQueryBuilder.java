@@ -5,7 +5,7 @@ import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.PageableResult;
-import com.lifeinide.rest.filter.intr.PageableSortable;
+import com.lifeinide.rest.filter.intr.Sortable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageImpl;
@@ -128,9 +128,9 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 	}
 
 	@Override
-	public PageableResult<E> list(PageableSortable req) {
+	public PageableResult<E> list(com.lifeinide.rest.filter.intr.Pageable pageable, Sortable sortable) {
 		Criteria criteria = build();
-		Pageable springPageable = SpringPageableConverter.applicationPageableToSpring(req);
+		Pageable springPageable = SpringPageableConverter.applicationPageableToSpring(pageable, sortable);
 
 		Query query;
 		if (fullTextQuery==null) {
