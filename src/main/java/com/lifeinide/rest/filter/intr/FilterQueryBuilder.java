@@ -28,7 +28,7 @@ public interface FilterQueryBuilder<E, Q, SELF extends FilterQueryBuilder<E, Q, 
 	 */
 	Q build();
 
-	PageableResult<E> list(Pageable pageable, Sortable sortable);
+	PageableResult<E> list(Pageable pageable, Sortable<?> sortable);
 
 	default PageableResult<E> list() {
 		return list(null, null);
@@ -38,11 +38,11 @@ public interface FilterQueryBuilder<E, Q, SELF extends FilterQueryBuilder<E, Q, 
 		return list(pageable, null);
 	}
 
-	default PageableResult<E> list(Sortable sortable) {
+	default PageableResult<E> list(Sortable<?> sortable) {
 		return list(null, sortable);
 	}
 
-	default PageableResult<E> list(PageableSortable ps) {
+	default PageableResult<E> list(PageableSortable<?> ps) {
 		return list(ps, ps);
 	}
 

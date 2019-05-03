@@ -128,7 +128,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 	}
 
 	@Override
-	public PageableResult<E> list(com.lifeinide.rest.filter.intr.Pageable pageable, Sortable sortable) {
+	public PageableResult<E> list(com.lifeinide.rest.filter.intr.Pageable pageable, Sortable<?> sortable) {
 		Criteria criteria = build();
 		Pageable springPageable = SpringPageableConverter.applicationPageableToSpring(pageable, sortable);
 

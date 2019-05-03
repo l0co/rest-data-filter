@@ -5,8 +5,8 @@ import java.util.List;
 /**
  * @author Lukasz Frankowski
  */
-public interface Sortable {
+public interface Sortable<S extends SortField> {
 
-	List<SortField> getSort();
+	List<S> getSort();
 
 }

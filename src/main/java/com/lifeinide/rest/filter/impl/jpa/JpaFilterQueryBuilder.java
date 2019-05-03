@@ -161,7 +161,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(Pageable pageable, Sortable sortable) {
+	public PageableResult<E> list(Pageable pageable, Sortable<?> sortable) {
 		if (pageable==null)
 			pageable = BaseRestFilter.ofUnpaged();
 		if (sortable==null)

@@ -294,7 +294,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(Pageable pageable, Sortable sortable) {
+	public PageableResult<E> list(Pageable pageable, Sortable<?> sortable) {
 		FullTextQuery fullTextQuery = build();
 
 		if (logger.isTraceEnabled())

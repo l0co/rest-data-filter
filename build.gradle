@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'com.lifeinide'
-version '0.1.0'
+version '0.1.4'
 description 'Common reusable frames for data filtering from REST/GraphQL.'
 
 sourceCompatibility = 1.11

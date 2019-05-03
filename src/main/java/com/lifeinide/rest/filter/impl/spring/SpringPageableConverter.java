@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
  */
 public class SpringPageableConverter {
 
-	public static PageRequest applicationPageableToSpring(Pageable pageable, Sortable sortable) {
+	public static PageRequest applicationPageableToSpring(Pageable pageable, Sortable<?> sortable) {
 		if (pageable==null)
 			pageable = BaseRestFilter.ofUnpaged();
 		if (sortable==null)

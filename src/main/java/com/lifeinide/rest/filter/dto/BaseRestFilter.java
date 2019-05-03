@@ -12,13 +12,13 @@ import java.util.List;
  *
  * @author Lukasz Frankowski
  */
-public class BaseRestFilter implements Serializable, PageableSortable {
+public class BaseRestFilter<S extends SortField> implements Serializable, PageableSortable<S> {
 
 	protected int pageSize = 20;
 
 	protected int page = 1;
 
-	protected List<SortField> sort = new ArrayList<>();
+	protected List<S> sort = new ArrayList<>();
 
 	@Override
 	public int getPageSize() {
@@ -49,15 +49,15 @@ public class BaseRestFilter implements Serializable, PageableSortable {
 	}
 
 	@Override
-	public List<SortField> getSort() {
+	public List<S> getSort() {
 		return sort;
 	}
 
-	public void setSort(List<SortField> sort) {
+	public void setSort(List<S> sort) {
 		this.sort = sort;
 	}
 
-	public BaseRestFilter withSort(SortField sort) {
+	public BaseRestFilter withSort(S sort) {
 		getSort().add(sort);
 		return this;
 	}
