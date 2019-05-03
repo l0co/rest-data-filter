@@ -1,5 +1,6 @@
 package com.lifeinide.rest.filter.test.hibernate;
 
+import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.test.BaseQueryBuilderTest;
 import com.lifeinide.rest.filter.test.IBaseEntity;
@@ -21,7 +22,7 @@ public abstract class BaseHibernateJpaTest<
 	ID extends Serializable,
 	A extends IBaseEntity<ID>,
 	E extends IEntity<ID, A>,
-	F extends FilterQueryBuilder<E, ?, F>
+	F extends FilterQueryBuilder<E, Page<E>, ?, F>
 > extends BaseQueryBuilderTest<EntityManager, ID, A, E, F> {
 
 	public static final String PERSISTENCE_UNIT_NAME = "test-jpa";

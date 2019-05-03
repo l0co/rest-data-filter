@@ -2,11 +2,11 @@ package com.lifeinide.rest.filter.impl.jpa;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
 import com.lifeinide.rest.filter.dto.BaseRestFilter;
+import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.Pageable;
-import com.lifeinide.rest.filter.intr.PageableResult;
 import com.lifeinide.rest.filter.intr.Sortable;
 import org.hibernate.query.criteria.internal.compile.CriteriaQueryTypeQueryAdapter;
 import org.slf4j.Logger;
@@ -27,8 +27,8 @@ import java.util.stream.Collectors;
  *
  * @author Lukasz Frankowski
  */
-public class JpaFilterQueryBuilder<E>
-extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaFilterQueryBuilder<E>> {
+public class JpaFilterQueryBuilder<E, P extends Page<E>>
+extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, JpaFilterQueryBuilder<E, P>> {
 
 	public static final Logger logger = LoggerFactory.getLogger(JpaFilterQueryBuilder.class);
 
@@ -60,7 +60,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 			countQuery.getRoots().add(fromRoot);
 	}
 
-	public JpaFilterQueryBuilder<E> withOrConjunction() {
+	public JpaFilterQueryBuilder<E, P> withOrConjunction() {
 		conjunction = QueryConjunction.or;
 		return this;
 	}
@@ -71,7 +71,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 	}
 
 	@Override
-	public JpaFilterQueryBuilder<E> add(String field, DateRangeQueryFilter filter) {
+	public JpaFilterQueryBuilder<E, P> add(String field, DateRangeQueryFilter filter) {
 		LocalDate from = filter.calculateFrom();
 		LocalDate to = filter.calculateTo();
 
@@ -89,7 +89,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 	}
 
 	@Override
-	public JpaFilterQueryBuilder<E> add(String field, EntityQueryFilter filter) {
+	public JpaFilterQueryBuilder<E, P> add(String field, EntityQueryFilter filter) {
 		// discover id field name of the associated entity
 		Class<?> associatedEntityJavaType = context.getRoot().get(field).getJavaType();
 		EntityType<?> associatedEntityType = context.getEntityManager().getEntityManagerFactory().getMetamodel().entity(associatedEntityJavaType);
@@ -103,8 +103,8 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 	}
 
 	@Override
-	public JpaFilterQueryBuilder<E> add(String field, ListQueryFilter<?> filter) {
-		JpaFilterQueryBuilder<E> internalBuilder =
+	public JpaFilterQueryBuilder<E,P> add(String field, ListQueryFilter<?> filter) {
+		JpaFilterQueryBuilder<E, P> internalBuilder =
 			new JpaFilterQueryBuilder<>(context.getEntityManager(), context.getQuery(), context.getRoot());
 
 		if (QueryConjunction.or.equals(filter.getConjunction()))
@@ -117,7 +117,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 	}
 
 	@Override
-	public JpaFilterQueryBuilder<E> add(String field, SingleValueQueryFilter filter) {
+	public JpaFilterQueryBuilder<E, P> add(String field, SingleValueQueryFilter filter) {
 		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(),
 			context.getCb(), context.getRoot().get(field), filter.getValue()));
 		return this;
@@ -125,7 +125,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public JpaFilterQueryBuilder<E> add(String field, ValueRangeQueryFilter filter) {
+	public JpaFilterQueryBuilder<E, P> add(String field, ValueRangeQueryFilter filter) {
 		Number from = filter.getFrom();
 		Number to = filter.getTo();
 
@@ -161,7 +161,7 @@ extends BaseFilterQueryBuilder<E, CriteriaQuery<E>, JpaQueryBuilderContext, JpaF
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(Pageable pageable, Sortable<?> sortable) {
+	public P list(Pageable pageable, Sortable<?> sortable) {
 		if (pageable==null)
 			pageable = BaseRestFilter.ofUnpaged();
 		if (sortable==null)

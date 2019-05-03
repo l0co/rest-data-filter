@@ -1,10 +1,10 @@
 package com.lifeinide.rest.filter.impl.spring;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
+import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
-import com.lifeinide.rest.filter.intr.PageableResult;
 import com.lifeinide.rest.filter.intr.Sortable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,8 +26,8 @@ import java.util.Optional;
  *
  * @author Lukasz Frankowski
  */
-public class SpringDataMongoFilterQueryBuilder<E>
-extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, SpringDataMongoFilterQueryBuilder<E>> {
+public class SpringDataMongoFilterQueryBuilder<E, P extends Page<E>>
+extends BaseFilterQueryBuilder<E, P, Criteria, SpringDataMongoQueryBuilderContext, SpringDataMongoFilterQueryBuilder<E, P>> {
 
 	public static final Logger logger = LoggerFactory.getLogger(SpringDataMongoFilterQueryBuilder.class);
 
@@ -46,7 +46,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 	}
 
 	@Override
-	public SpringDataMongoFilterQueryBuilder<E> add(String field, DateRangeQueryFilter filter) {
+	public SpringDataMongoFilterQueryBuilder<E, P> add(String field, DateRangeQueryFilter filter) {
 		if (filter!=null) {
 			Criteria fromCriteria = null;
 			Criteria toCriteria = null;
@@ -67,7 +67,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 	}
 
 	@Override
-	public SpringDataMongoFilterQueryBuilder<E> add(String field, EntityQueryFilter filter) {
+	public SpringDataMongoFilterQueryBuilder<E, P> add(String field, EntityQueryFilter filter) {
 		if (filter!=null)
 			addCriteria(SpringDataMongoCriteriaBuilderHelper.INSTANCE
 				.buildCriteria(filter.getCondition(), field+".id", filter.getValue()));
@@ -76,9 +76,9 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 	}
 
 	@Override
-	public SpringDataMongoFilterQueryBuilder<E> add(String field, ListQueryFilter<?> filter) {
+	public SpringDataMongoFilterQueryBuilder<E, P> add(String field, ListQueryFilter<?> filter) {
 		if (filter!=null) {
-			SpringDataMongoFilterQueryBuilder<E> internalBuilder =
+			SpringDataMongoFilterQueryBuilder<E, P> internalBuilder =
 				new SpringDataMongoFilterQueryBuilder<>(this.mongoTemplate, context.getEntityClass(), filter.getConjunction(), null);
 			filter.getFilters().forEach(it -> it.accept(internalBuilder, field));
 			Optional.ofNullable(internalBuilder.build()).ifPresent(this::addCriteria);
@@ -88,7 +88,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 	}
 
 	@Override
-	public SpringDataMongoFilterQueryBuilder<E> add(String field, SingleValueQueryFilter filter) {
+	public SpringDataMongoFilterQueryBuilder<E, P> add(String field, SingleValueQueryFilter filter) {
 		if (filter!=null)
 			addCriteria(SpringDataMongoCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(), field, filter.getValue()));
 
@@ -96,7 +96,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 	}
 
 	@Override
-	public SpringDataMongoFilterQueryBuilder<E> add(String field, ValueRangeQueryFilter filter) {
+	public SpringDataMongoFilterQueryBuilder<E, P> add(String field, ValueRangeQueryFilter filter) {
 		if (filter!=null) {
 			Criteria fromCriteria = null;
 			Criteria toCriteria = null;
@@ -127,8 +127,9 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 			.conjunctCriteria(context.getConjunction(), context.getCriterias().toArray(new Criteria[0]));
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(com.lifeinide.rest.filter.intr.Pageable pageable, Sortable<?> sortable) {
+	public P list(com.lifeinide.rest.filter.intr.Pageable pageable, Sortable<?> sortable) {
 		Criteria criteria = build();
 		Pageable springPageable = SpringPageableConverter.applicationPageableToSpring(pageable, sortable);
 
@@ -154,7 +155,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 
 		if (criteria!=null)
 			query.addCriteria(criteria);
-		return SpringPageableConverter.springPageToApplication(this, 
+		return SpringPageableConverter.springPageToApplication(this,
 			new PageImpl<>(mongoTemplate.find(query, context.getEntityClass()), springPageable,
 				mongoTemplate.count(query, context.getEntityClass()))
 		);
@@ -169,7 +170,7 @@ extends BaseFilterQueryBuilder<E, Criteria, SpringDataMongoQueryBuilderContext, 
 			addCriteria(toCriteria);
 	}
 
-	public SpringDataMongoFilterQueryBuilder<E> addCriteria(Criteria criteria) {
+	public SpringDataMongoFilterQueryBuilder<E, P> addCriteria(Criteria criteria) {
 		context.getCriterias().add(criteria);
 		return this;
 	}

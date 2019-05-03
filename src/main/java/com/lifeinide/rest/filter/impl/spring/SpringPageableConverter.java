@@ -31,8 +31,8 @@ public class SpringPageableConverter {
 		));
 	}
 
-	public static <E> PageableResult<E> springPageToApplication(PageableResult.Builder<E> builder,
-																org.springframework.data.domain.Page<E> page) {
+	public static <E, P extends PageableResult<E>> P springPageToApplication(
+			PageableResult.Builder<E, P> builder, org.springframework.data.domain.Page<E> page) {
 		return builder.buildPageableResult(page.getPageable().getPageSize(), page.getPageable().getPageNumber(),
 			page.getTotalElements(), page.getContent());
 	}

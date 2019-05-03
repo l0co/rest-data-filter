@@ -1,5 +1,6 @@
 package com.lifeinide.rest.filter.test.hibernate.jpa;
 
+import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.impl.jpa.JpaFilterQueryBuilder;
 import com.lifeinide.rest.filter.test.hibernate.BaseHibernateJpaTest;
 import org.junit.jupiter.api.BeforeAll;
@@ -10,7 +11,8 @@ import java.util.function.BiConsumer;
 /**
  * @author Lukasz Frankowski
  */
-public class JpaQueryBuilderTest extends BaseHibernateJpaTest<Long, JpaAssociatedEntity, JpaEntity, JpaFilterQueryBuilder<JpaEntity>> {
+public class JpaQueryBuilderTest extends BaseHibernateJpaTest<Long, JpaAssociatedEntity, JpaEntity,
+JpaFilterQueryBuilder<JpaEntity, Page<JpaEntity>>> {
 
 	@BeforeAll
 	public void populateData() {
@@ -28,7 +30,7 @@ public class JpaQueryBuilderTest extends BaseHibernateJpaTest<Long, JpaAssociate
 	}
 
 	@Override
-	protected void doTest(BiConsumer<EntityManager, JpaFilterQueryBuilder<JpaEntity>> c) {
+	protected void doTest(BiConsumer<EntityManager, JpaFilterQueryBuilder<JpaEntity, Page<JpaEntity>>> c) {
 		doWithEntityManager(em -> c.accept(em, new JpaFilterQueryBuilder<>(em, JpaEntity.class)));
 	}
 	

@@ -6,11 +6,12 @@ import com.lifeinide.rest.filter.filters.*;
  * Visits all possible {@link QueryFilter -s} to build the query.
  *
  * @param <E> represents entity type
+ * @param <P> represents type of pageable result returned from {@link #list(Pageable, Sortable)}
  * @param <Q> represents the type of query build from all criterial
  *
  * @author Lukasz Frankowski
  */
-public interface FilterQueryBuilder<E, Q, SELF extends FilterQueryBuilder<E, Q, SELF>> {
+public interface FilterQueryBuilder<E, P extends PageableResult<E>, Q, SELF extends FilterQueryBuilder<E, P, Q, SELF>> {
 
 	SELF add(String field, DateRangeQueryFilter filter);
 	SELF add(String field, EntityQueryFilter filter);
@@ -28,21 +29,21 @@ public interface FilterQueryBuilder<E, Q, SELF extends FilterQueryBuilder<E, Q, 
 	 */
 	Q build();
 
-	PageableResult<E> list(Pageable pageable, Sortable<?> sortable);
+	P list(Pageable pageable, Sortable<?> sortable);
 
-	default PageableResult<E> list() {
+	default P list() {
 		return list(null, null);
 	}
 	
-	default PageableResult<E> list(Pageable pageable) {
+	default P list(Pageable pageable) {
 		return list(pageable, null);
 	}
 
-	default PageableResult<E> list(Sortable<?> sortable) {
+	default P list(Sortable<?> sortable) {
 		return list(null, sortable);
 	}
 
-	default PageableResult<E> list(PageableSortable<?> ps) {
+	default P list(PageableSortable<?> ps) {
 		return list(ps, ps);
 	}
 

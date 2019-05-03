@@ -9,8 +9,8 @@ import java.util.List;
 public interface PageableResult<T> extends Pageable, Iterable<T> {
 
 	@FunctionalInterface
-	interface Builder<E> {
-		PageableResult<E> buildPageableResult(int pageSize, int page, long count, List<E> data);
+	interface Builder<E, P extends PageableResult<E>> {
+		P buildPageableResult(int pageSize, int page, long count, List<E> data);
 	}
 
 	long getCount();

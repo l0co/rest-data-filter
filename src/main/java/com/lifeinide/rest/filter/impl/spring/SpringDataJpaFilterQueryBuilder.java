@@ -1,11 +1,11 @@
 package com.lifeinide.rest.filter.impl.spring;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
+import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
 import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
 import com.lifeinide.rest.filter.intr.Pageable;
-import com.lifeinide.rest.filter.intr.PageableResult;
 import com.lifeinide.rest.filter.intr.Sortable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -25,8 +25,8 @@ import java.time.ZoneId;
  *
  * @author Lukasz Frankowski
  */
-public class SpringDataJpaFilterQueryBuilder<E>
-extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderContext, SpringDataJpaFilterQueryBuilder<E>> {
+public class SpringDataJpaFilterQueryBuilder<E, P extends Page<E>>
+extends BaseFilterQueryBuilder<E, P, Specification<E>, SpringDataJpaQueryBuilderContext, SpringDataJpaFilterQueryBuilder<E, P>> {
 
 	protected SpringDataJpaQueryBuilderContext<E> context;
 	protected Repositories repositories;
@@ -42,7 +42,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SpringDataJpaFilterQueryBuilder<E> add(String field, DateRangeQueryFilter filter) {
+	public SpringDataJpaFilterQueryBuilder<E, P> add(String field, DateRangeQueryFilter filter) {
 		if (filter!=null)
 			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> {
 				Predicate fromPredicate = null;
@@ -76,7 +76,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 	}
 
 	@Override
-	public SpringDataJpaFilterQueryBuilder<E> add(String field, EntityQueryFilter filter) {
+	public SpringDataJpaFilterQueryBuilder<E, P> add(String field, EntityQueryFilter filter) {
 		if (filter!=null)
 			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> SpringDataJpaCriteriaBuilderHelper.INSTANCE.buildCriteria(
 				filter.getCondition(), criteriaBuilder, root.get(field).get("id"), filter.getValue()));
@@ -85,9 +85,9 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 	}
 
 	@Override
-	public SpringDataJpaFilterQueryBuilder<E> add(String field, ListQueryFilter<?> filter) {
+	public SpringDataJpaFilterQueryBuilder<E, P> add(String field, ListQueryFilter<?> filter) {
 		if (filter!=null) {
-			SpringDataJpaFilterQueryBuilder<E> internalBuilder =
+			SpringDataJpaFilterQueryBuilder<E, P> internalBuilder =
 				new SpringDataJpaFilterQueryBuilder<>(this.repositories, context.getEntityClass(), filter.getConjunction());
 
 			filter.getFilters().forEach(it -> it.accept(internalBuilder, field));
@@ -100,7 +100,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 	}
 
 	@Override
-	public SpringDataJpaFilterQueryBuilder<E> add(String field, SingleValueQueryFilter filter) {
+	public SpringDataJpaFilterQueryBuilder<E, P> add(String field, SingleValueQueryFilter filter) {
 		if (filter!=null)
 			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> SpringDataJpaCriteriaBuilderHelper.INSTANCE.buildCriteria(
 				filter.getCondition(), criteriaBuilder, root.get(field), filter.getValue()));
@@ -110,7 +110,7 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public SpringDataJpaFilterQueryBuilder<E> add(String field, ValueRangeQueryFilter filter) {
+	public SpringDataJpaFilterQueryBuilder<E, P> add(String field, ValueRangeQueryFilter filter) {
 		if (filter!=null) {
 			addSpecification((Specification<E>) (root, query, criteriaBuilder) -> {
 				Predicate fromPredicate = null;
@@ -137,8 +137,8 @@ extends BaseFilterQueryBuilder<E, Specification<E>, SpringDataJpaQueryBuilderCon
 	}
 
 	@Override
-	public PageableResult<E> list(Pageable pageable, Sortable<?> sortable) {
-		return SpringPageableConverter.springPageToApplication(this, 
+	public P list(Pageable pageable, Sortable<?> sortable) {
+		return SpringPageableConverter.springPageToApplication(this,
 			findExecutor().findAll(build(), SpringPageableConverter.applicationPageableToSpring(pageable, sortable)));
 	}
 

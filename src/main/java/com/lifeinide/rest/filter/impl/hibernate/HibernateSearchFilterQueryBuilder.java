@@ -1,10 +1,14 @@
 package com.lifeinide.rest.filter.impl.hibernate;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
+import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
 import com.lifeinide.rest.filter.filters.*;
-import com.lifeinide.rest.filter.intr.*;
+import com.lifeinide.rest.filter.intr.FilterQueryBuilder;
+import com.lifeinide.rest.filter.intr.Pageable;
+import com.lifeinide.rest.filter.intr.QueryFilter;
+import com.lifeinide.rest.filter.intr.Sortable;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.BooleanJunction;
@@ -28,8 +32,8 @@ import static org.hibernate.search.util.StringHelper.isEmpty;
  * @see HibernateSearch How to define searchable fields on entities
  * @author Lukasz Frankowski
  */
-public class HibernateSearchFilterQueryBuilder<E>
-extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderContext, HibernateSearchFilterQueryBuilder<E>> {
+public class HibernateSearchFilterQueryBuilder<E, P extends Page<E>>
+extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderContext, HibernateSearchFilterQueryBuilder<E, P>> {
 
 	public static final Logger logger = LoggerFactory.getLogger(HibernateSearchFilterQueryBuilder.class);
 
@@ -117,7 +121,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 	}
 
 	@Override
-	public HibernateSearchFilterQueryBuilder<E> add(String field, DateRangeQueryFilter filter) {
+	public HibernateSearchFilterQueryBuilder<E, P> add(String field, DateRangeQueryFilter filter) {
 		if (filter!=null) {
 			LocalDate from = filter.calculateFrom();
 			LocalDate to = filter.calculateTo();
@@ -140,13 +144,13 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 	}
 
 	@Override
-	public HibernateSearchFilterQueryBuilder<E> add(String field, EntityQueryFilter filter) {
+	public HibernateSearchFilterQueryBuilder<E, P> add(String field, EntityQueryFilter filter) {
 		return add(field, (SingleValueQueryFilter) filter);
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public HibernateSearchFilterQueryBuilder<E> add(String field, ListQueryFilter filter) {
+	public HibernateSearchFilterQueryBuilder<E, P> add(String field, ListQueryFilter filter) {
 		if (filter!=null) {
 
 			List<QueryFilter> filters = filter.getFilters();
@@ -192,7 +196,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 	}
 
 	@Override
-	public HibernateSearchFilterQueryBuilder<E> add(String field, SingleValueQueryFilter filter) {
+	public HibernateSearchFilterQueryBuilder<E, P> add(String field, SingleValueQueryFilter filter) {
 		if (filter!=null) {
 			if (QueryCondition.eq.equals(filter.getCondition()))
 				must(context.getBooleanJunction(), field, filter.getValue(), true);
@@ -211,7 +215,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 	}
 
 	@Override
-	public HibernateSearchFilterQueryBuilder<E> add(String field, ValueRangeQueryFilter filter) {
+	public HibernateSearchFilterQueryBuilder<E, P> add(String field, ValueRangeQueryFilter filter) {
 		if (filter!=null) {
 			if (filter.getFrom()!=null)
 				context.getBooleanJunction().must(context.getQueryBuilder().range().onField(field).above(filter.getFrom()).createQuery());
@@ -223,12 +227,13 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 	}
 
-	public HibernateSearchFilterQueryBuilder<E> must(BooleanJunction booleanJunction, String fieldName, Object expression) {
+	public HibernateSearchFilterQueryBuilder<E, P> must(BooleanJunction booleanJunction, String fieldName, Object expression) {
 		must(booleanJunction, fieldName, expression, false);
 		return this;
 	}
 
-	public HibernateSearchFilterQueryBuilder<E> must(BooleanJunction booleanJunction, String fieldName, Object expression, boolean ignoreAnalyzer) {
+	public HibernateSearchFilterQueryBuilder<E, P> must(BooleanJunction booleanJunction, String fieldName, Object expression,
+													  boolean ignoreAnalyzer) {
 		if (ignoreAnalyzer) {
 			booleanJunction.must(context.getQueryBuilder().keyword().onField(fieldName).ignoreAnalyzer().
 				matching(expression).createQuery());
@@ -238,11 +243,12 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 		return this;
 	}
 
-	public HibernateSearchFilterQueryBuilder<E> should(BooleanJunction booleanJunction, String fieldName, Object expression) {
+	public HibernateSearchFilterQueryBuilder<E, P> should(BooleanJunction booleanJunction, String fieldName, Object expression) {
 		return should(booleanJunction, fieldName, expression, false);
 	}
 
-	public HibernateSearchFilterQueryBuilder<E> should(BooleanJunction booleanJunction, String fieldName, Object expression, boolean ignoreAnalyzer) {
+	public HibernateSearchFilterQueryBuilder<E, P> should(BooleanJunction booleanJunction, String fieldName, Object expression,
+														boolean ignoreAnalyzer) {
 		if (ignoreAnalyzer) {
 			booleanJunction.should(context.getQueryBuilder().keyword().onField(fieldName).ignoreAnalyzer().
 				matching(expression).createQuery());
@@ -252,7 +258,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 		return this;
 	}
 
-	public HibernateSearchFilterQueryBuilder<E> mustNot(BooleanJunction booleanJunction, String fieldName, Object expression) {
+	public HibernateSearchFilterQueryBuilder<E, P> mustNot(BooleanJunction booleanJunction, String fieldName, Object expression) {
 		return mustNot(booleanJunction, fieldName, expression, false);
 	}
 
@@ -264,7 +270,8 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 	 * @param expression     The must not expression
 	 * @param ignoreAnalyzer if to ignore analyzer. If analyzer is ignored fields will not be sliced into tokens.
 	 */
-	public HibernateSearchFilterQueryBuilder<E> mustNot(BooleanJunction booleanJunction, String fieldName, Object expression, boolean ignoreAnalyzer) {
+	public HibernateSearchFilterQueryBuilder<E, P> mustNot(BooleanJunction booleanJunction, String fieldName, Object expression,
+														 boolean ignoreAnalyzer) {
 		if (ignoreAnalyzer) {
 			booleanJunction.must(context.getQueryBuilder().keyword().onField(fieldName).ignoreAnalyzer().
 				matching(expression).createQuery()).not().createQuery();
@@ -294,7 +301,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public PageableResult<E> list(Pageable pageable, Sortable<?> sortable) {
+	public P list(Pageable pageable, Sortable<?> sortable) {
 		FullTextQuery fullTextQuery = build();
 
 		if (logger.isTraceEnabled())
@@ -307,7 +314,7 @@ extends BaseFilterQueryBuilder<E, FullTextQuery, HibernateSearchQueryBuilderCont
 			fullTextQuery.setMaxResults(pageable.getPageSize());
 		}
 
-		return buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, fullTextQuery.getResultList());
+		return (P) buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, fullTextQuery.getResultList());
 	}
 	
 }

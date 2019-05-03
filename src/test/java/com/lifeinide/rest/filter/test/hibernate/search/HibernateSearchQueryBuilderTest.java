@@ -1,5 +1,6 @@
 package com.lifeinide.rest.filter.test.hibernate.search;
 
+import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearch;
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearchFilterQueryBuilder;
 import com.lifeinide.rest.filter.test.QueryBuilderTestFeature;
@@ -16,7 +17,12 @@ import java.util.function.BiConsumer;
 /**
  * @author Lukasz Frankowski
  */
-public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<Long, HibernateSearchAssociatedEntity, HibernateSearchEntity, HibernateSearchFilterQueryBuilder<HibernateSearchEntity>> {
+public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<
+	Long,
+	HibernateSearchAssociatedEntity,
+	HibernateSearchEntity,
+	HibernateSearchFilterQueryBuilder<HibernateSearchEntity, Page<HibernateSearchEntity>>
+> {
 
 	public static final String SEARCHABLE_STRING = "in the middle of";
 
@@ -60,7 +66,7 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<Long, 
 	}
 
 	@Override
-	protected void doTest(BiConsumer<EntityManager, HibernateSearchFilterQueryBuilder<HibernateSearchEntity>> c) {
+	protected void doTest(BiConsumer<EntityManager, HibernateSearchFilterQueryBuilder<HibernateSearchEntity, Page<HibernateSearchEntity>>> c) {
 		doWithEntityManager(em -> c.accept(em,
 			new HibernateSearchFilterQueryBuilder<>(new HibernateSearch(em), HibernateSearchEntity.class, SEARCHABLE_STRING)));
 	}
