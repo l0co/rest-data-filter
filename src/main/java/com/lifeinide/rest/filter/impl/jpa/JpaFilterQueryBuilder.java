@@ -53,11 +53,6 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, J
 	protected void init(CriteriaQuery<E> query, Root<E> root) {
 		context.setQuery(query);
 		context.setRoot(root);
-
-		CriteriaQuery<Long> countQuery = context.getEntityManager().getCriteriaBuilder().createQuery(Long.class);
-		countQuery.select(context.getCb().count(query.getRoots().iterator().next()));
-		for(Root<?> fromRoot : query.getRoots())
-			countQuery.getRoots().add(fromRoot);
 	}
 
 	public JpaFilterQueryBuilder<E, P> withOrConjunction() {
