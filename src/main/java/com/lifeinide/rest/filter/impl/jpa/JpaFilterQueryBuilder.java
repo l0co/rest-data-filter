@@ -72,72 +72,83 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, J
 
 	@Override
 	public JpaFilterQueryBuilder<E, P> add(String field, DateRangeQueryFilter filter) {
-		LocalDate from = filter.calculateFrom();
-		LocalDate to = filter.calculateTo();
+		if (filter!=null) {
+			LocalDate from = filter.calculateFrom();
+			LocalDate to = filter.calculateTo();
 
-		Predicate predicate = from==null ? null : context.getCb().greaterThanOrEqualTo(context.getRoot().get(field), from);
-		Predicate toPredicate = to==null ? null : context.getCb().lessThan(context.getRoot().get(field), to);
+			Predicate predicate = from==null ? null : context.getCb().greaterThanOrEqualTo(context.getRoot().get(field), from);
+			Predicate toPredicate = to==null ? null : context.getCb().lessThan(context.getRoot().get(field), to);
 
-		predicate = (predicate!=null && toPredicate!=null)
-			? context.getCb().and(predicate, toPredicate)
-			: predicate != null ? predicate : toPredicate;
+			predicate = (predicate!=null && toPredicate!=null)
+				? context.getCb().and(predicate, toPredicate)
+				: predicate != null ? predicate : toPredicate;
 
-		if (predicate!=null)
-			context.getPredicates().add(predicate);
+			if (predicate!=null)
+				context.getPredicates().add(predicate);
+		}
 
 		return this;
 	}
 
 	@Override
 	public JpaFilterQueryBuilder<E, P> add(String field, EntityQueryFilter filter) {
-		// discover id field name of the associated entity
-		Class<?> associatedEntityJavaType = context.getRoot().get(field).getJavaType();
-		EntityType<?> associatedEntityType = context.getEntityManager().getEntityManagerFactory().getMetamodel().entity(associatedEntityJavaType);
-		Class<?> idJavaType = associatedEntityType.getIdType().getJavaType();
-		SingularAttribute<?, ?> id = associatedEntityType.getId(idJavaType);
+		if (filter!=null) {
+			// discover id field name of the associated entity
+			Class<?> associatedEntityJavaType = context.getRoot().get(field).getJavaType();
+			EntityType<?> associatedEntityType = context.getEntityManager().getEntityManagerFactory().getMetamodel().entity(associatedEntityJavaType);
+			Class<?> idJavaType = associatedEntityType.getIdType().getJavaType();
+			SingularAttribute<?, ?> id = associatedEntityType.getId(idJavaType);
 
-		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(), context.getCb(),
-			context.getRoot().get(field).get(id.getName()), filter.getValue()));
+			context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(), context.getCb(),
+				context.getRoot().get(field).get(id.getName()), filter.getValue()));
+		}
 
 		return this;
 	}
 
 	@Override
 	public JpaFilterQueryBuilder<E,P> add(String field, ListQueryFilter<?> filter) {
-		JpaFilterQueryBuilder<E, P> internalBuilder =
-			new JpaFilterQueryBuilder<>(context.getEntityManager(), context.getQuery(), context.getRoot());
+		if (filter!=null) {
+			JpaFilterQueryBuilder<E, P> internalBuilder =
+				new JpaFilterQueryBuilder<>(context.getEntityManager(), context.getQuery(), context.getRoot());
 
-		if (QueryConjunction.or.equals(filter.getConjunction()))
-			internalBuilder.withOrConjunction();
+			if (QueryConjunction.or.equals(filter.getConjunction()))
+				internalBuilder.withOrConjunction();
 
-		filter.getFilters().forEach(f -> f.accept(internalBuilder, field));
-		internalBuilder.buildPredicate().ifPresent(predicate -> context.getPredicates().add(predicate));
+			filter.getFilters().forEach(f -> f.accept(internalBuilder, field));
+			internalBuilder.buildPredicate().ifPresent(predicate -> context.getPredicates().add(predicate));
+		}
 
 		return this;
 	}
 
 	@Override
 	public JpaFilterQueryBuilder<E, P> add(String field, SingleValueQueryFilter filter) {
-		context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(),
-			context.getCb(), context.getRoot().get(field), filter.getValue()));
+		if (filter!=null) {
+			context.getPredicates().add(JpaCriteriaBuilderHelper.INSTANCE.buildCriteria(filter.getCondition(),
+				context.getCb(), context.getRoot().get(field), filter.getValue()));
+		}
+		
 		return this;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public JpaFilterQueryBuilder<E, P> add(String field, ValueRangeQueryFilter filter) {
-		Number from = filter.getFrom();
-		Number to = filter.getTo();
+		if (filter!=null) {
+			Number from = filter.getFrom();
+			Number to = filter.getTo();
 
-		Predicate predicate = from==null ? null : context.getCb().greaterThanOrEqualTo(context.getRoot().get(field), (Comparable) from);
-		Predicate toPredicate = to==null ? null : context.getCb().lessThanOrEqualTo(context.getRoot().get(field), (Comparable) to);
+			Predicate predicate = from==null ? null : context.getCb().greaterThanOrEqualTo(context.getRoot().get(field), (Comparable) from);
+			Predicate toPredicate = to==null ? null : context.getCb().lessThanOrEqualTo(context.getRoot().get(field), (Comparable) to);
 
-		predicate = (predicate!=null && toPredicate!=null)
-			? context.getCb().and(predicate, toPredicate)
-			: predicate != null ? predicate : toPredicate;
+			predicate = (predicate!=null && toPredicate!=null)
+				? context.getCb().and(predicate, toPredicate)
+				: predicate != null ? predicate : toPredicate;
 
-		if (predicate!=null)
-			context.getPredicates().add(predicate);
+			if (predicate!=null)
+				context.getPredicates().add(predicate);
+		}
 
 		return this;
 	}
