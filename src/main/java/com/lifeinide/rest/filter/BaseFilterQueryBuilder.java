@@ -20,7 +20,7 @@ implements FilterQueryBuilder<E, P, Q, SELF>, Builder<E, P> {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	public P buildPageableResult(int pageSize, int page, long count, List<E> data) {
+	public P buildPageableResult(Integer pageSize, Integer page, long count, List<E> data) {
 		return (P) new Page<>(pageSize, page, count, data);
 	}
 

@@ -14,36 +14,36 @@ import java.util.List;
  */
 public class BaseRestFilter<S extends SortField> implements Serializable, PageableSortable<S> {
 
-	protected int pageSize = 20;
+	protected Integer pageSize = 20;
 
-	protected int page = 1;
+	protected Integer page = 1;
 
 	protected List<S> sort = new ArrayList<>();
 
 	@Override
-	public int getPageSize() {
+	public Integer getPageSize() {
 		return pageSize;
 	}
 
-	public void setPageSize(int pageSize) {
+	public void setPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 	}
 
-	public BaseRestFilter withPageSize(int pageSize) {
+	public BaseRestFilter withPageSize(Integer pageSize) {
 		this.pageSize = pageSize;
 		return this;
 	}
 
 	@Override
-	public int getPage() {
+	public Integer getPage() {
 		return page;
 	}
 
-	public void setPage(int page) {
+	public void setPage(Integer page) {
 		this.page = page;
 	}
 
-	public BaseRestFilter withPage(int page) {
+	public BaseRestFilter withPage(Integer page) {
 		this.page = page;
 		return this;
 	}
@@ -67,7 +67,7 @@ public class BaseRestFilter<S extends SortField> implements Serializable, Pageab
 	}
 
 	public static BaseRestFilter ofUnpaged() {
-		return ofDefault().withPageSize(0);
+		return ofDefault().withPageSize(null).withPage(null);
 	}
 
 }

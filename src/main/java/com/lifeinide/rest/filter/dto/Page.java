@@ -14,21 +14,21 @@ import java.util.function.Consumer;
  */
 public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 
-	protected int pageSize;
-	protected int page;
+	protected Integer pageSize;
+	protected Integer page;
 	protected long count;
-	protected int pagesCount = 0;
+	protected Integer pagesCount;
 	protected List<T> data;
 
 	public Page() {
 	}
 
-	public Page(int pageSize, int page, long count, List<T> data) {
+	public Page(Integer pageSize, Integer page, long count, List<T> data) {
 		this.pageSize = pageSize;
 		this.page = page;
 		this.count = count;
 		this.data = data;
-		if (pageSize > 0)
+		if (isPaged())
 			this.pagesCount = (int) (this.count / pageSize + (this.count % pageSize == 0 ? 0 : 1));
 	}
 
@@ -37,7 +37,7 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 	}
 
 	@Override
-	public int getPageSize() {
+	public Integer getPageSize() {
 		return pageSize;
 	}
 
@@ -46,11 +46,11 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 	}
 
 	@Override
-	public int getPage() {
+	public Integer getPage() {
 		return page;
 	}
 
-	public void setPage(int page) {
+	public void setPage(Integer page) {
 		this.page = page;
 	}
 
@@ -64,11 +64,11 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 	}
 
 	@Override
-	public int getPagesCount() {
+	public Integer getPagesCount() {
 		return pagesCount;
 	}
 
-	public void setPagesCount(int pagesCount) {
+	public void setPagesCount(Integer pagesCount) {
 		this.pagesCount = pagesCount;
 	}
 

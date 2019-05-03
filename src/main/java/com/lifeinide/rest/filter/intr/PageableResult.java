@@ -10,11 +10,11 @@ public interface PageableResult<T> extends Pageable, Iterable<T> {
 
 	@FunctionalInterface
 	interface Builder<E, P extends PageableResult<E>> {
-		P buildPageableResult(int pageSize, int page, long count, List<E> data);
+		P buildPageableResult(Integer pageSize, Integer page, long count, List<E> data);
 	}
 
 	long getCount();
-	int getPagesCount();
+	Integer getPagesCount();
 	List<T> getData();
 
 	@Override

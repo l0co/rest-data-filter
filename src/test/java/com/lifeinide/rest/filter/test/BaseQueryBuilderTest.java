@@ -126,9 +126,9 @@ public abstract class BaseQueryBuilderTest<
 			PageableResult<E> res = qb.list(BaseRestFilter.ofUnpaged());
 			assertEquals(100, res.getCount());
 			assertEquals(100, res.getData().size());
-			assertEquals(0, res.getPageSize());
-			assertEquals(0, res.getPagesCount());
-			assertEquals(1, res.getPage());
+			assertNull(res.getPageSize());
+			assertNull(res.getPagesCount());
+			assertNull(res.getPage());
 		});
 	}
 
@@ -138,16 +138,16 @@ public abstract class BaseQueryBuilderTest<
 			PageableResult<E> res = qb.list(BaseRestFilter.ofDefault().withPageSize(20));
 			assertEquals(100, res.getCount());
 			assertEquals(20, res.getData().size());
-			assertEquals(20, res.getPageSize());
-			assertEquals(5, res.getPagesCount());
-			assertEquals(1, res.getPage());
+			assertEquals(Integer.valueOf(20), res.getPageSize());
+			assertEquals(Integer.valueOf(5), res.getPagesCount());
+			assertEquals(Integer.valueOf(1), res.getPage());
 
 			PageableResult<E> res2 = qb.list(BaseRestFilter.ofDefault().withPageSize(20).withPage(2));
 			assertEquals(100, res2.getCount());
 			assertEquals(20, res2.getData().size());
-			assertEquals(20, res2.getPageSize());
-			assertEquals(5, res2.getPagesCount());
-			assertEquals(2, res2.getPage());
+			assertEquals(Integer.valueOf(20), res2.getPageSize());
+			assertEquals(Integer.valueOf(5), res2.getPagesCount());
+			assertEquals(Integer.valueOf(2), res2.getPage());
 
 			for (E e: res2.getData()) {
 				assertFalse(res.getData().contains(e));

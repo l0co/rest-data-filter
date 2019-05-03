@@ -5,16 +5,17 @@ package com.lifeinide.rest.filter.intr;
  */
 public interface Pageable {
 
-	int getPageSize();
-	int getPage();
+	Integer getPageSize();
+	Integer getPage();
 
-	default int getOffset() {
-		return (getPage()-1) * getPageSize();
+	default Integer getOffset() {
+		if (isPaged())
+			return (getPage()-1) * getPageSize();
+		return null;
 	}
 
 	default boolean isPaged() {
-		return getPageSize() > 0;
+		return getPage()!=null && getPageSize()!=null;
 	}
-
 
 }

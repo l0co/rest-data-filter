@@ -11,7 +11,7 @@ import java.io.Serializable;
 public class Sort implements Serializable, SortField {
 
 	protected String sortField;
-	protected SortDirection sortDirection;
+	protected SortDirection sortDirection = SortDirection.ASC;
 
 	@Override
 	public String getSortField() {
