@@ -18,7 +18,7 @@ public class Sort implements Serializable, SortField {
 		return sortField;
 	}
 
-	public void setSortField(String sortField) {
+	public void setField(String sortField) {
 		this.sortField = sortField;
 	}
 
@@ -27,22 +27,22 @@ public class Sort implements Serializable, SortField {
 		return sortDirection;
 	}
 
-	public void setSortDirection(SortDirection sortDirection) {
+	public void setDirection(SortDirection sortDirection) {
 		this.sortDirection = sortDirection;
 	}
 
 	public Sort with(String sortField) {
-		setSortField(sortField);
+		setField(sortField);
 		return this;
 	}
 
 	public Sort asc() {
-		setSortDirection(SortDirection.ASC);
+		setDirection(SortDirection.ASC);
 		return this;
 	}
 
 	public Sort desc() {
-		setSortDirection(SortDirection.DESC);
+		setDirection(SortDirection.DESC);
 		return this;
 	}
 
