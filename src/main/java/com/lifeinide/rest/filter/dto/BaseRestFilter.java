@@ -16,7 +16,7 @@ public class BaseRestFilter<S extends SortField> implements Serializable, Pageab
 
 	protected Integer pageSize;
 
-	protected Integer page;
+	protected Integer page = 1;
 
 	protected List<S> sort = new ArrayList<>();
 
