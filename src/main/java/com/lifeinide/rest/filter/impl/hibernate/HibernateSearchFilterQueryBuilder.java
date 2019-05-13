@@ -1,6 +1,7 @@
 package com.lifeinide.rest.filter.impl.hibernate;
 
 import com.lifeinide.rest.filter.BaseFilterQueryBuilder;
+import com.lifeinide.rest.filter.dto.BaseRestFilter;
 import com.lifeinide.rest.filter.dto.Page;
 import com.lifeinide.rest.filter.enums.QueryCondition;
 import com.lifeinide.rest.filter.enums.QueryConjunction;
@@ -302,6 +303,11 @@ extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderC
 	@SuppressWarnings("unchecked")
 	@Override
 	public P list(Pageable pageable, Sortable<?> sortable) {
+		if (pageable==null)
+			pageable = BaseRestFilter.ofUnpaged();
+		if (sortable==null)
+			sortable = BaseRestFilter.ofUnpaged();
+
 		FullTextQuery fullTextQuery = build();
 
 		if (logger.isTraceEnabled())
