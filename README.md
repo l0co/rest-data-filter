@@ -153,7 +153,7 @@ Because `BaseRestFilter` supports pagination and sort out of the box we can now 
 }
 ```
 
-Now, in your controller you can simply get the data in the following way (this example uses `JpaFilterQueruBuilder` but there are some other options listed below):
+Now, in your controller you can simply get the data in the following way (this example uses `JpaFilterQueryBuilder` but there are some other options listed below):
 
 ```java
 public PageableResult<User> listUsers(UserFilter req) {
