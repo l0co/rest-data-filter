@@ -441,6 +441,7 @@ public abstract class BaseQueryBuilderTest<
 	}
 
 	@Test
+	@SuppressWarnings("unchecked")
 	public void testMultipleFilters() {
 		doTest((pc, qb) -> {
 			PageableResult<E> res = qb
