@@ -128,7 +128,7 @@ public abstract class BaseQueryBuilderTest<
 			assertEquals(100, res.getData().size());
 			assertNull(res.getPageSize());
 			assertNull(res.getPagesCount());
-			assertNull(res.getPage());
+			assertEquals(1, (int) res.getPage());
 		});
 	}
 
