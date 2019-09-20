@@ -8,6 +8,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Spliterator;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * @author Lukasz Frankowski
@@ -34,6 +36,10 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 
 	public Page(Pageable pageable, long count, List<T> data) {
 		this(pageable.getPageSize(), pageable.getPage(), count, data);
+	}
+
+	public <E> Page(Page<E> page, Function<E, T> transformation) {
+		this(page, page.getCount(), page.getData().stream().map(transformation).collect(Collectors.toList()));
 	}
 
 	@Override
@@ -79,6 +85,10 @@ public class Page<T> implements Serializable, PageableResult<T>, Iterable<T> {
 
 	public void setData(List<T> data) {
 		this.data = data;
+	}
+
+	public <E> Page<E> transform(Function<T, E> transformation) {
+		return new Page<>(this, transformation);
 	}
 
 	/**********************************************************************************************************

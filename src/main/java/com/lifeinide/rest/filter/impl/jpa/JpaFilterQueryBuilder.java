@@ -39,7 +39,7 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, J
 		this.context = new JpaQueryBuilderContext<>(entityManager, entityManager.getCriteriaBuilder());
 	}
 
-	public JpaFilterQueryBuilder(EntityManager entityManager, CriteriaQuery<E> query, Root<E> root) {
+	public JpaFilterQueryBuilder(EntityManager entityManager, CriteriaQuery<E> query, Root<?> root) {
 		this(entityManager);
 		init(query, root);
 	}
@@ -50,7 +50,7 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, J
 		init(query, query.from(rootClass));
 	}
 
-	protected void init(CriteriaQuery<E> query, Root<E> root) {
+	protected void init(CriteriaQuery<E> query, Root<?> root) {
 		context.setQuery(query);
 		context.setRoot(root);
 	}

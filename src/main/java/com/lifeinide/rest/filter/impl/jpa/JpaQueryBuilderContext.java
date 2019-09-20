@@ -17,7 +17,7 @@ public class JpaQueryBuilderContext<E> extends BaseQueryBuilderContext {
 
 	protected EntityManager entityManager;
 	protected CriteriaBuilder cb;
-	protected Root<E> root;
+	protected Root root;
 	protected CriteriaQuery<E> query;
 	List<Predicate> predicates = new ArrayList<>();
 
@@ -34,11 +34,11 @@ public class JpaQueryBuilderContext<E> extends BaseQueryBuilderContext {
 		return cb;
 	}
 
-	public Root<E> getRoot() {
+	public Root<?> getRoot() {
 		return root;
 	}
 
-	public void setRoot(Root<E> root) {
+	public void setRoot(Root<?> root) {
 		this.root = root;
 	}
 
