@@ -13,6 +13,7 @@ import com.lifeinide.rest.filter.intr.Sortable;
 import org.hibernate.search.exception.SearchException;
 import org.hibernate.search.jpa.FullTextQuery;
 import org.hibernate.search.query.dsl.BooleanJunction;
+import org.hibernate.search.query.dsl.QueryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,8 +42,8 @@ extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderC
 	protected HibernateSearchQueryBuilderContext<E> context;
 
 	public HibernateSearchFilterQueryBuilder(HibernateSearch hibernateSearch, Class<E> entityClass, String q) {
-		var queryBuilder = hibernateSearch.queryBuilder(entityClass);
-		var booleanJunction = queryBuilder.bool();
+		QueryBuilder queryBuilder = hibernateSearch.queryBuilder(entityClass);
+		BooleanJunction<BooleanJunction> booleanJunction = queryBuilder.bool();
 		this.context = new HibernateSearchQueryBuilderContext<>(q, entityClass, hibernateSearch, queryBuilder, booleanJunction);
 
 		BooleanJunction fullTextQuery = queryBuilder.bool();

@@ -13,10 +13,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
 import javax.persistence.criteria.*;
 import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.SingularAttribute;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -182,14 +184,14 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, J
 		Selection<E> selection = context.getQuery().getSelection();
 		CriteriaQuery countQuery = context.getQuery();
 		countQuery.select(context.getCb().count(context.getRoot()));
-		var cq = context.getEntityManager().createQuery(countQuery);
+		TypedQuery cq = context.getEntityManager().createQuery(countQuery);
 		if (logger.isTraceEnabled())
 			logger.trace("Executing JPA query: {}", ((CriteriaQueryTypeQueryAdapter) cq).getQueryString());
 		Long count = (Long) cq.getSingleResult();
 		context.getQuery().select(selection); // restore selection afterwards
 
 		// apply orders
-		var orders = sortable.getSort().stream()
+		List<Order> orders = sortable.getSort().stream()
 			.map(sort -> sort.isAsc()
 				? context.getCb().asc(context.getRoot().get(sort.getSortField()))
 				: context.getCb().desc(context.getRoot().get(sort.getSortField())))
@@ -198,7 +200,7 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, J
 			context.getQuery().orderBy(orders);
 
 		// apply pagination
-		var q = context.getEntityManager().createQuery(context.getQuery());
+		TypedQuery<E> q = context.getEntityManager().createQuery(context.getQuery());
 		if (pageable.isPaged())
 			q.setFirstResult(pageable.getOffset()).setMaxResults(pageable.getPageSize());
 		if (logger.isTraceEnabled())

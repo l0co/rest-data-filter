@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeAll;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
-import java.nio.file.Path;
+import java.nio.file.FileSystems;
 import java.util.function.BiConsumer;
 
 /**
@@ -36,7 +36,7 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<
 	public void done() {
 		super.done();
 		try {
-			FileUtils.deleteDirectory(Path.of("tmp").toFile());
+			FileUtils.deleteDirectory(FileSystems.getDefault().getPath("tmp").toFile());
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
