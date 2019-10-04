@@ -25,6 +25,20 @@ public interface FilterQueryBuilder<E, P extends PageableResult<E>, Q, SELF exte
 	SELF add(String field, QueryFilter filter);
 
 	/**
+	 * Allows to construct "or" clauses. Eg: {@code filter.or(() -> filter.add(CONDITION_1).add(CONDITION_2))}.
+	 */
+	default SELF or(Runnable r) {
+		throw new IllegalStateException("Not implemented");
+	}
+
+	/**
+	 * Allows to construct "and" clauses. Eg: {@code filter.and(() -> filter.add(CONDITION_1).add(CONDITION_2))}.
+	 */
+	default SELF and(Runnable r) {
+		throw new IllegalStateException("Not implemented");
+	}
+
+	/**
 	 * Builds the final query from criterias
 	 */
 	Q build();

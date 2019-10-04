@@ -9,6 +9,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * @author Lukasz Frankowski
@@ -19,11 +20,12 @@ public class JpaQueryBuilderContext<E> extends BaseQueryBuilderContext {
 	protected CriteriaBuilder cb;
 	protected Root root;
 	protected CriteriaQuery<E> query;
-	List<Predicate> predicates = new ArrayList<>();
+	protected Stack<List<Predicate>> predicates = new Stack<>();
 
 	public JpaQueryBuilderContext(EntityManager entityManager, CriteriaBuilder cb) {
 		this.entityManager = entityManager;
 		this.cb = cb;
+		this.predicates.push(new ArrayList<>());
 	}
 
 	public EntityManager getEntityManager() {
@@ -51,7 +53,13 @@ public class JpaQueryBuilderContext<E> extends BaseQueryBuilderContext {
 	}
 
 	public List<Predicate> getPredicates() {
-		return predicates;
+		return predicates.peek();
+	}
+
+	List<Predicate> doWithNewPredicates(Runnable r) {
+		this.predicates.push(new ArrayList<>());
+		r.run();
+		return this.predicates.pop();
 	}
 	
 }

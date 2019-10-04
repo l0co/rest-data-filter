@@ -151,6 +151,22 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, J
 	}
 
 	@Override
+	public JpaFilterQueryBuilder<E, P> or(Runnable r) {
+		List<Predicate> orPredicates = context.doWithNewPredicates(r);
+		if (!orPredicates.isEmpty())
+			context.getPredicates().add(context.getCb().or(orPredicates.toArray(new Predicate[0])));
+		return this;
+	}
+
+	@Override
+	public JpaFilterQueryBuilder<E, P> and(Runnable r) {
+		List<Predicate> andPredicates = context.doWithNewPredicates(r);
+		if (!andPredicates.isEmpty())
+			context.getPredicates().add(context.getCb().and(andPredicates.toArray(new Predicate[0])));
+		return this;
+	}
+
+	@Override
 	public CriteriaQuery<E> build() {
 		return context.getQuery();
 	}
