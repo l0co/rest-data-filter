@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
  * @author Lukasz Frankowski
  */
 public class JpaFilterQueryBuilder<E, P extends Page<E>>
-extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, JpaFilterQueryBuilder<E, P>> {
+extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext<E>, JpaFilterQueryBuilder<E, P>> {
 
 	public static final Logger logger = LoggerFactory.getLogger(JpaFilterQueryBuilder.class);
 
@@ -63,7 +63,7 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext, J
 	}
 
 	@Override
-	public JpaQueryBuilderContext context() {
+	public JpaQueryBuilderContext<E> context() {
 		return context;
 	}
 
