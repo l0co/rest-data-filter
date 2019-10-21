@@ -55,6 +55,8 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext<E>
 	protected void init(CriteriaQuery<E> query, Root<?> root) {
 		context.setQuery(query);
 		context.setRoot(root);
+		if (root!=null && root.getJavaType()!=null)
+			root.alias(createAlias(root.getJavaType()));
 	}
 
 	public JpaFilterQueryBuilder<E, P> withOrConjunction() {

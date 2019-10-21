@@ -30,4 +30,8 @@ implements FilterQueryBuilder<E, P, Q, SELF>, Builder<E, P> {
 			filter.getClass().getSimpleName(), getClass().getSimpleName()));
 	}
 
+	protected String createAlias(Class clazz) {
+		return clazz.getSimpleName().replaceAll("[a-z]", "").toLowerCase();
+	}
+
 }
