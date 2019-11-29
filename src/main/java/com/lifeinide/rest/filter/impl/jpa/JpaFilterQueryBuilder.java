@@ -225,7 +225,7 @@ extends BaseFilterQueryBuilder<E, P, CriteriaQuery<E>, JpaQueryBuilderContext<E>
 			logger.trace("Executing JPA query: {}", ((CriteriaQueryTypeQueryAdapter<E>) q).getQueryString());
 
 		// create and execute main query
-		return buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, q.getResultList());
+		return (P) buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, q.getResultList());
 	}
 	
 }
