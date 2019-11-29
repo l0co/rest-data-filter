@@ -7,7 +7,9 @@ import com.lifeinide.rest.filter.test.QueryBuilderTestFeature;
 import com.lifeinide.rest.filter.test.hibernate.BaseHibernateJpaTest;
 import org.apache.commons.io.FileUtils;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import javax.persistence.EntityManager;
 import java.io.IOException;
@@ -69,6 +71,21 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<
 	protected void doTest(BiConsumer<EntityManager, HibernateSearchFilterQueryBuilder<HibernateSearchEntity, Page<HibernateSearchEntity>>> c) {
 		doWithEntityManager(em -> c.accept(em,
 			new HibernateSearchFilterQueryBuilder<>(new HibernateSearch(em), HibernateSearchEntity.class, SEARCHABLE_STRING)));
+	}
+
+	@Test
+	@SuppressWarnings("unchecked")
+	public void localAndGlobalSearchTest() {
+		doWithEntityManager(em -> {
+			HibernateSearchFilterQueryBuilder<?, Page<?>> qb =
+				new HibernateSearchFilterQueryBuilder(new HibernateSearch(em), HibernateSearchEntity.class, "middle");
+			Page<?> page = qb.list();
+			Assertions.assertEquals(100, page.getCount());
+
+			qb = new HibernateSearchFilterQueryBuilder(new HibernateSearch(em), Object.class, "middle");
+			page = qb.list();
+			Assertions.assertEquals(101, page.getCount());
+		});
 	}
 	
 }

@@ -21,7 +21,7 @@ import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
 
-import static org.hibernate.search.util.StringHelper.isEmpty;
+import static org.hibernate.search.util.StringHelper.*;
 
 /**
  * Implementation of {@link FilterQueryBuilder} for Hibernate Search. Use with dependency:
@@ -41,6 +41,9 @@ extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderC
 
 	protected HibernateSearchQueryBuilderContext<E> context;
 
+	/**
+	 * @param entityClass Use concrete entity class to search for the specific entities, or {@code Object.class} to do a global search.
+	 */
 	public HibernateSearchFilterQueryBuilder(HibernateSearch hibernateSearch, Class<E> entityClass, String q) {
 		QueryBuilder queryBuilder = hibernateSearch.queryBuilder(entityClass);
 		BooleanJunction<BooleanJunction> booleanJunction = queryBuilder.bool();
@@ -323,5 +326,7 @@ extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderC
 
 		return (P) buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, fullTextQuery.getResultList());
 	}
+
+	// TODOLF add option with explanation projection + test
 	
 }

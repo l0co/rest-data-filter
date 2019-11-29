@@ -34,7 +34,8 @@ public abstract class BaseQueryBuilderTest<
 	PC,
 	ID extends Serializable,
 	A extends IBaseEntity<ID>,
-	E extends IEntity<ID, A>, F extends FilterQueryBuilder<E, Page<E>, ?, F>
+	E extends IEntity<ID, A>,
+	F extends FilterQueryBuilder<E, Page<E>, ?, F>
 > {
 
 	public static final LocalDate TODAY = LocalDate.of(2018, Month.APRIL, 1);
