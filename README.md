@@ -168,12 +168,10 @@ public PageableResult<User> listUsers(UserFilter req) {
 
 This lib provides following query builders implementation, ready to be used with default filters:
 
-| Class | Description | Status |
-|------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|-------------------|
-| [JpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/jpa/JpaFilterQueryBuilder.java) | Provides query builder for JPA criteria API. | Production ready. |
-| [HibernateSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateSearchFilterQueryBuilder.java) | Provides query builder for Hibernate Search. | Production ready. |
-| [SpringDataJpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataJpaFilterQueryBuilder.java) | Provides query builder for Spring Data JPA. | Not fully tested yet. |
-| [SpringDataMongoFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/spring/SpringDataMongoFilterQueryBuilder.java) | Provides query builder for Spring Data MongoDB. | Not fully tested yet. |
+| Class | Description | 
+|------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------|
+| [JpaFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/jpa/JpaFilterQueryBuilder.java) | Provides query builder for JPA criteria API. |
+| [HibernateSearchFilterQueryBuilder](src/main/java/com/lifeinide/rest/filter/impl/hibernate/HibernateSearchFilterQueryBuilder.java) | Provides query builder for Hibernate Search. |
 
 Note, that the underlying **dependencies are not included by default by this lib** and to enable given persistence storage support you need to add dependencies described in the specific query builder class header to your project.
 
