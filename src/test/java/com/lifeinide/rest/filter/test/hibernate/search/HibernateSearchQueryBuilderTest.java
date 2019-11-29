@@ -27,6 +27,7 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<
 > {
 
 	public static final String SEARCHABLE_STRING = "in the middle of";
+	public static final String SEARCHABLE_STRING_PART = "middle";
 
 	@BeforeAll
 	public void populateData() {
@@ -75,14 +76,14 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<
 
 	@Test
 	@SuppressWarnings("unchecked")
-	public void localAndGlobalSearchTest() {
+	public void testLocalAndGlobalSearch() {
 		doWithEntityManager(em -> {
 			HibernateSearchFilterQueryBuilder<?, Page<?>> qb =
-				new HibernateSearchFilterQueryBuilder(new HibernateSearch(em), HibernateSearchEntity.class, "middle");
+				new HibernateSearchFilterQueryBuilder(new HibernateSearch(em), HibernateSearchEntity.class, SEARCHABLE_STRING_PART);
 			Page<?> page = qb.list();
 			Assertions.assertEquals(100, page.getCount());
 
-			qb = new HibernateSearchFilterQueryBuilder(new HibernateSearch(em), Object.class, "middle");
+			qb = new HibernateSearchFilterQueryBuilder(new HibernateSearch(em), Object.class, SEARCHABLE_STRING_PART);
 			page = qb.list();
 			Assertions.assertEquals(101, page.getCount());
 		});
