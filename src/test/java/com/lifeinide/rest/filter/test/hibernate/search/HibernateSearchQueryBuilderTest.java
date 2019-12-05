@@ -1,6 +1,7 @@
 package com.lifeinide.rest.filter.test.hibernate.search;
 
 import com.lifeinide.rest.filter.dto.Page;
+import com.lifeinide.rest.filter.impl.hibernate.DefaultHibernateSearchFilterQueryBuilder;
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearch;
 import com.lifeinide.rest.filter.impl.hibernate.HibernateSearchFilterQueryBuilder;
 import com.lifeinide.rest.filter.test.QueryBuilderTestFeature;
@@ -75,18 +76,17 @@ public class HibernateSearchQueryBuilderTest extends BaseHibernateJpaTest<
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testLocalAndGlobalSearch() {
 		doWithEntityManager(em -> {
-			HibernateSearchFilterQueryBuilder<?, Page<?>> qb =
-				new HibernateSearchFilterQueryBuilder(new HibernateSearch(em), HibernateSearchEntity.class, SEARCHABLE_STRING_PART);
+			DefaultHibernateSearchFilterQueryBuilder<?> qb =
+				new DefaultHibernateSearchFilterQueryBuilder<>(new HibernateSearch(em), HibernateSearchEntity.class, SEARCHABLE_STRING_PART);
 			Page<?> page = qb.list();
 			Assertions.assertEquals(100, page.getCount());
 
-			qb = new HibernateSearchFilterQueryBuilder(new HibernateSearch(em), Object.class, SEARCHABLE_STRING_PART);
+			qb = new DefaultHibernateSearchFilterQueryBuilder<>(new HibernateSearch(em), Object.class, SEARCHABLE_STRING_PART);
 			page = qb.list();
 			Assertions.assertEquals(101, page.getCount());
 		});
 	}
-	
+
 }

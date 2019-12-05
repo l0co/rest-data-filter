@@ -20,20 +20,23 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.Field;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static org.hibernate.search.util.StringHelper.*;
 
 /**
- * Implementation of {@link FilterQueryBuilder} for Hibernate Search. Use with dependency:
+ * Implementation of {@link FilterQueryBuilder} for Hibernate Search using local filesystem lucene index. Use with dependency:
  *
  * <pre>{@code
- * compile group: 'org.hibernate', name: 'hibernate-search-engine', version: '5.8.2.Final'
- * compileOnly group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.8.2.Final'
+ * compile group: 'org.hibernate', name: 'hibernate-search-engine', version: '5.11.4.Final'
+ * compileOnly group: 'org.hibernate', name: 'hibernate-search-orm', version: '5.11.4.Final'
  * }</pre>
  *
  * @see HibernateSearch How to define searchable fields on entities
  * @author Lukasz Frankowski
  */
+@SuppressWarnings("unchecked")
 public class HibernateSearchFilterQueryBuilder<E, P extends Page<E>>
 extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderContext, HibernateSearchFilterQueryBuilder<E, P>> {
 
@@ -153,7 +156,6 @@ extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderC
 		return add(field, (SingleValueQueryFilter) filter);
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
 	public HibernateSearchFilterQueryBuilder<E, P> add(String field, ListQueryFilter filter) {
 		if (filter!=null) {
@@ -304,15 +306,16 @@ extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderC
 		return context.getHibernateSearch().buildQuery(context.getBooleanJunction().createQuery(), context.getEntityClass());
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public P list(Pageable pageable, Sortable<?> sortable) {
+	protected <T> Page<T> execute(Pageable pageable, Sortable<?> sortable, Consumer<FullTextQuery> queryCustomizer,
+								  Function<List, List<T>> resultsTransformer) {
 		if (pageable==null)
 			pageable = BaseRestFilter.ofUnpaged();
 		if (sortable==null)
 			sortable = BaseRestFilter.ofUnpaged();
 
 		FullTextQuery fullTextQuery = build();
+		if (queryCustomizer!=null)
+			queryCustomizer.accept(fullTextQuery);
 
 		if (logger.isTraceEnabled())
 			logger.trace("Executing lucene query: {}", fullTextQuery.toString());
@@ -324,9 +327,19 @@ extends BaseFilterQueryBuilder<E, P, FullTextQuery, HibernateSearchQueryBuilderC
 			fullTextQuery.setMaxResults(pageable.getPageSize());
 		}
 
-		return (P) buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, fullTextQuery.getResultList());
+		List<T> resultsList;
+		if (resultsTransformer!=null)
+			resultsList = resultsTransformer.apply(fullTextQuery.getResultList());
+		else
+			resultsList = (List<T>) fullTextQuery.getResultList();
+
+		return buildPageableResult(pageable.getPageSize(), pageable.getPage(), count, resultsList);
+
 	}
 
-	// TODOLF add option with explanation projection + test
-	
+	@Override
+	public P list(Pageable pageable, Sortable<?> sortable) {
+		return (P) execute(pageable, sortable, null, null);
+	}
+
 }
