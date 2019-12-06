@@ -11,3 +11,4 @@ crashlytics-build.properties
 fabric.properties
 .gradle
 build
+.token
