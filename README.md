@@ -1,4 +1,4 @@
-# rest-data-filter
+# This project is no longer supported and the code is moved to https://github.com/json-ql
 
 A collection of DTO frames that can be used to create data filters through REST/GraphQL interface containing the abstraction to fetch underlying data from any data source (sql/nosql database, lucene index, etc) and some concrete implementations.
 
